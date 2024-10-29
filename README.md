@@ -5,8 +5,6 @@
   </picture>
 </a>
 
-# Firecrawl Quickstarts
-
 Firecrawl Quickstarts is an independent and unofficial collection of projects designed to help developers quickly get started with building applications using the Firecrawl API. Each quickstart provides a foundation that you can easily build upon and customize for your specific needs. This repository is not affiliated with, endorsed by, or officially supported by Firecrawl.
 
 ## Getting Started
