@@ -46,39 +46,26 @@ Learn how to use Firecrawl’s LLM-powered data extraction features. This quicks
 
 ## General Usage
 
-Each quickstart project comes with its own README and setup instructions. Generally, you'll follow these steps:
+Each quickstart project is a Jupyter notebook designed to be easily opened and run on Google Colab. To get started, follow these steps:
 
-1. **Clone this repository**
+1. **Open the Repository in Google Colab**
 
-   ```bash
-   git clone https://github.com/yourusername/firecrawl-quickstarts.git
-   ```
+   Each notebook has a link to open directly in Google Colab. Click on the link for the quickstart you want to explore.
 
-2. **Navigate to the specific quickstart directory**
+2. **Set Up Your Firecrawl API Key**
 
-   ```bash
-   cd firecrawl-quickstarts/web-scraping-quickstart
-   ```
+   Each notebook requires a Firecrawl API key. Once you've created your key (available [here](https://firecrawl.dev)), enter it in the notebook when prompted or set it as an environment variable as directed in the notebook.
 
-3. **Install the required dependencies**
+3. **Run Each Notebook Cell Sequentially**
 
-   ```bash
-   pip install -r requirements.txt  # For Python projects
-   npm install                      # For Node.js projects
-   ```
+   Follow the instructions within each notebook, running cells in order. The notebooks will guide you through each step, from setting up the environment to executing web scraping or extraction tasks.
 
-4. **Set up your Firecrawl API key as an environment variable**
+4. **View Results and Experiment**
 
-   ```bash
-   export FIRECRAWL_API_KEY=fc-YOUR_API_KEY
-   ```
+   The notebooks are designed to be interactive. You can modify the code cells, adjust parameters, or try different objectives to explore Firecrawl’s capabilities further.
 
-5. **Run the quickstart application**
+Each notebook includes explanations and usage examples to help you understand and customize your setup.
 
-   ```bash
-   python app.py    # For Python projects
-   node app.js      # For Node.js projects
-   ```
 
 ## Explore Further
 
