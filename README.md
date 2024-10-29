@@ -1,3 +1,10 @@
+<a href="https://x.com/alxfazio" target="_blank">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="images/firecrawl-quickstarts-github-cover.png">
+    <img alt="Firecrawl Quickstarts Logo" src="images/firecrawl-quickstarts-github-cover.png" width="400px" style="max-width: 100%; margin-bottom: 20px;">
+  </picture>
+</a>
+
 # Firecrawl Quickstarts
 
 Firecrawl Quickstarts is an independent and unofficial collection of projects designed to help developers quickly get started with building applications using the Firecrawl API. Each quickstart provides a foundation that you can easily build upon and customize for your specific needs. This repository is not affiliated with, endorsed by, or officially supported by Firecrawl.
