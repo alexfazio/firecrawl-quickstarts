@@ -19,7 +19,7 @@ To use these quickstarts, you'll need a Firecrawl API key. If you don't have one
 
 This quickstart introduces how to integrate Firecrawl with OpenAI's Anthropic models to search and extract information based on specific user objectives. Learn to map a website, identify relevant pages, and retrieve content aligned with the objective. Ideal for targeted information gathering.
 
-[Go to Firecrawl Web Crawling with OpenAI and Anthropic](./claude_researcher_with_map)
+[Go to Firecrawl Web Crawling with OpenAI and Anthropic](./claude_researcher_with_map.ipynb)
 
 ### Integrating OpenAI o1 Models with Firecrawl
 
