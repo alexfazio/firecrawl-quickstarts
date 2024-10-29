@@ -25,31 +25,31 @@ This quickstart introduces how to integrate Firecrawl with OpenAI's Anthropic mo
 
 Explore how to enhance the Firecrawl web crawling process with OpenAI’s o1 reasoning models. This quickstart guides you in using these advanced models to generate search parameters, map sites, and validate extracted content, enhancing the precision and relevance of data extraction.
 
-[Go to Integrating OpenAI o1 Models with Firecrawl](./crawl_and_extract_with_openai_o1)
+[Go to Integrating OpenAI o1 Models with Firecrawl](./crawl_and_extract_with_openai_o1.ipynb)
 
 ### Building a Web Crawler with Grok-2 and Firecrawl
 
 Combine Grok-2’s AI-powered understanding with Firecrawl’s search to create an intelligent web crawler. This quickstart demonstrates building a targeted crawler that finds and processes structured data on web pages, with output in JSON format for seamless data handling.
 
-[Go to Building a Web Crawler with Grok-2 and Firecrawl](./crawl_and_extract_with_xai_grok)
+[Go to Building a Web Crawler with Grok-2 and Firecrawl](./crawl_and_extract_with_xai_grok.ipynb)
 
 ### Firecrawl Map Endpoint Quickstart
 
 Learn how to use Firecrawl's Map endpoint to create comprehensive sitemaps from single URLs. This quickstart is perfect for efficiently gathering website structures, enabling tasks such as content mapping, SEO analysis, and scalable web data extraction.
 
-[Go to Firecrawl Map Endpoint Quickstart](./firecrawl_map_endpoint_tutorial)
+[Go to Firecrawl Map Endpoint Quickstart](./firecrawl_map_endpoint_tutorial.ipynb)
 
 ### Job Board Scraping with Firecrawl and OpenAI
 
 Automate job listing extraction and analysis with Firecrawl and OpenAI’s Structured Outputs. This quickstart demonstrates scraping job boards, extracting structured job details, and matching listings to a user’s resume with schema-compliant outputs for reliable data processing.
 
-[Go to Job Board Scraping with Firecrawl and OpenAI](./job_scraping_tutorial)
+[Go to Job Board Scraping with Firecrawl and OpenAI](./job_scraping_tutorial.ipynb)
 
 ### Firecrawl LLM Extract Tutorial
 
 Learn how to use Firecrawl’s LLM-powered data extraction features. This quickstart covers extracting structured data from web pages, with options for schema-defined and prompt-only extraction, making it adaptable for diverse data formats and applications.
 
-[Go to Firecrawl LLM Extract Tutorial](./llm_extract_tutorial)
+[Go to Firecrawl LLM Extract Tutorial](./llm_extract_tutorial.ipynb)
 
 ## General Usage
 
