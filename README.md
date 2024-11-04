@@ -93,16 +93,12 @@ We welcome contributions to the Firecrawl Quickstarts repository! If you have id
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT](https://opensource.org/licenses/MIT) License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 *It is the sole responsibility of the end users to respect websites' policies when scraping, searching, and crawling with Firecrawl. Users are advised to adhere to the applicable privacy policies and terms of use of the websites prior to initiating any scraping activities. By default, Firecrawl respects the directives specified in the websites' robots.txt files when crawling. By utilizing Firecrawl, you expressly agree to comply with these conditions.*
 
 [↑ Back to Top ↑](#firecrawl-quickstarts)
-
-## License
-
-[MIT](https://opensource.org/licenses/MIT)
 
 Copyright (c) 2024-present, Alex Fazio
