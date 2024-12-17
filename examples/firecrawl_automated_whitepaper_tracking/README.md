@@ -13,28 +13,33 @@ A robust price tracking system that monitors product prices across e-commerce we
 ## Setup
 
 1. Clone the repository
-2. Install dependencies:
 
+2. Install Poetry (if not already installed):
    ```bash
-   pip install -r requirements.txt
+   curl -sSL https://install.python-poetry.org | python3 -
+   ```
 
-	3.	Ensure PostgreSQL is installed:
-	•	PostgreSQL must be installed and pg_config must be in your PATH.
-	•	On macOS (using Homebrew):
+3. Install dependencies:
+   ```bash
+   poetry install
+   ```
 
-brew install postgresql
+4. Ensure PostgreSQL is installed:
+   - PostgreSQL must be installed and pg_config must be in your PATH.
+   - On macOS (using Homebrew):
+     ```bash
+     brew install postgresql
+     ```
+   - Verify pg_config:
+     ```bash
+     pg_config --version
+     ```
 
-
-	•	Verify pg_config:
-
-pg_config --version
-
-
-	4.	Configure environment variables:
-
-cp .env.example .env
-
-Then edit .env with your:
-	•	Discord webhook URL
-	•	Database credentials
-	•	Firecrawl API key
+5. Configure environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+   Then edit .env with your:
+   - Discord webhook URL
+   - Database credentials
+   - Firecrawl API key

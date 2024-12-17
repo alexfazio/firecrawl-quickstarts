@@ -1,7 +1,7 @@
 import os
+from typing import Dict, Any
 from firecrawl import FirecrawlApp
 from dotenv import load_dotenv
-from typing import Dict, Any
 import requests
 
 load_dotenv()
