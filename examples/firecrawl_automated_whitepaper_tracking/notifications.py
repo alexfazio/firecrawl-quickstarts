@@ -1,7 +1,7 @@
-from dotenv import load_dotenv
 import os
-import aiohttp
 import asyncio
+import aiohttp
+from dotenv import load_dotenv
 
 load_dotenv()
 
