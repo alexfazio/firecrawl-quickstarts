@@ -17,15 +17,24 @@ A robust price tracking system that monitors product prices across e-commerce we
 
    ```bash
    pip install -r requirements.txt
-   ```
 
-3. Configure environment variables:
+	3.	Ensure PostgreSQL is installed:
+	•	PostgreSQL must be installed and pg_config must be in your PATH.
+	•	On macOS (using Homebrew):
 
-   ```bash
-   cp .env.example .env
-   ```
+brew install postgresql
 
-   Then edit `.env` with your:
-   - Discord webhook URL
-   - Database credentials
-   - Firecrawl API key
+
+	•	Verify pg_config:
+
+pg_config --version
+
+
+	4.	Configure environment variables:
+
+cp .env.example .env
+
+Then edit .env with your:
+	•	Discord webhook URL
+	•	Database credentials
+	•	Firecrawl API key
