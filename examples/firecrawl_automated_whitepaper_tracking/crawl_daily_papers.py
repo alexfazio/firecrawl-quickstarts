@@ -4,33 +4,35 @@ from firecrawl import FirecrawlApp
 from dotenv import load_dotenv
 import requests
 
+__doc__ = """Module for crawling and extracting paper URLs from the main HuggingFace Daily Papers page."""
+
 load_dotenv()
 
 def get_all_source_urls(json_data: Dict[str, Any]) -> list:
     """
     Recursively extract all 'sourceURL' values from paginated JSON data returned by crawl_papers().
     """
-    source_urls = []
+    extracted_urls = []
     
     if "data" in json_data:
         for entry in json_data["data"]:
             if "metadata" in entry and "sourceURL" in entry["metadata"]:
-                source_urls.append(entry["metadata"]["sourceURL"])
+                extracted_urls.append(entry["metadata"]["sourceURL"])
     
     if "next" in json_data and json_data["next"]:
         next_page_url = json_data["next"]
         response = requests.get(next_page_url)
         if response.ok:
             next_json_data = response.json()
-            source_urls.extend(get_all_source_urls(next_json_data))
+            extracted_urls.extend(get_all_source_urls(next_json_data))
     
-    return source_urls
+    return extracted_urls
 
-def crawl_papers(api_key: str, URL: str) -> list:
+def crawl_papers(firecrawl_api_key: str, target_url: str) -> list:
     """
     Crawl papers from a given URL using Firecrawl's crawl_url() method and return all source URLs
     """
-    app = FirecrawlApp(api_key=api_key)
+    app = FirecrawlApp(api_key=firecrawl_api_key)
     params = {
         'limit': 30,
         'excludePaths': ['papers$'],
@@ -42,7 +44,7 @@ def crawl_papers(api_key: str, URL: str) -> list:
             'includeTags': ['a']
         }
     }
-    crawl_result = app.crawl_url(URL, params=params)
+    crawl_result = app.crawl_url(target_url, params=params)
     return get_all_source_urls(crawl_result)
 
 if __name__ == "__main__":
