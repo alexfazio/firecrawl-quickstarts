@@ -92,6 +92,7 @@ def extract_paper_details(url: str) -> dict:
         utc_submission_date_day: int
         utc_submission_date_month: int
         utc_submission_date_year: int
+        github_repo_url: str
     data = app.scrape_url(url, {
         'formats': ['extract'],
         'extract': {
