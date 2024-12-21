@@ -102,4 +102,4 @@ if __name__ == "__main__":
         )
     )
 
-# TO-DO: implement discord button for feedback about relevancy of notifications
+# TODO: implement discord button for feedback about relevancy of notifications

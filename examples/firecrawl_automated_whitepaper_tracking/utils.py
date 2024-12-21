@@ -1,8 +1,18 @@
+__doc__ = """Module for utility functions."""
+
 from urllib.parse import urlparse
 import re
 
 
 def is_valid_url(url: str) -> bool:
+    """Validate if the given string is a properly formatted HTTP(S) URL.
+
+    Args:
+        url (str): The URL to validate
+
+    Returns:
+        bool: True if URL is valid, False otherwise
+    """
     try:
         # Parse the URL
         result = urlparse(url)
@@ -24,5 +34,5 @@ def is_valid_url(url: str) -> bool:
 
         return True
 
-    except Exception:
+    except ValueError:
         return False

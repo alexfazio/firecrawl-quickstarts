@@ -28,11 +28,19 @@ def belongs_to_category(paper_title: str, paper_abstract: str, desired_category:
             messages=[
                 {
                     "role": "system", 
-                    "content": "You are a research paper classifier. You must respond with valid JSON containing a boolean 'belongs_to_category' and a float 'confidence' between 0 and 1."
+                    "content": (
+                        "You are a research paper classifier. You must respond with valid JSON "
+                        "containing a boolean 'belongs_to_category' and a float 'confidence' "
+                        "between 0 and 1."
+                    )
                 },
                 {
                     "role": "user", 
-                    "content": f"Does this paper belong to the category '{desired_category}'?\n\nTitle: {paper_title}\n\nAbstract: {paper_abstract}"
+                    "content": (
+                        f"Does this paper belong to the category '{desired_category}'?\n\n"
+                        f"Title: {paper_title}\n\n"
+                        f"Abstract: {paper_abstract}"
+                    )
                 }
             ],
             response_format={
@@ -41,7 +49,8 @@ def belongs_to_category(paper_title: str, paper_abstract: str, desired_category:
             }
         )
         if completion.choices and completion.choices[0].message:
-            classification = CategoryMatch.model_validate_json(completion.choices[0].message.content)
+            content = completion.choices[0].message.content
+            classification = CategoryMatch.model_validate_json(content)
             return classification.belongs_to_category and classification.confidence > 0.8
         return False
     except (ValueError, JSONDecodeError, OpenAIError) as e:
@@ -50,11 +59,14 @@ def belongs_to_category(paper_title: str, paper_abstract: str, desired_category:
 
 if __name__ == "__main__":
     # Test the classifier
-    test_title = "Building Reliable LLM Agents: A Study in Reinforcement Learning"
-    test_abstract = "This paper explores methods for creating more reliable AI agents using LLMs and RL..."
-    category = "LLM Agents"
-    result = belongs_to_category(test_title, test_abstract, category)
-    print(f"Paper belongs to category '{category}': {result}")
+    TEST_TITLE = "Building Reliable LLM Agents: A Study in Reinforcement Learning"
+    TEST_ABSTRACT = (
+        "This paper explores methods for creating more reliable AI agents "
+        "using LLMs and RL..."
+    )
+    CATEGORY = "LLM Agents"
+    result = belongs_to_category(TEST_TITLE, TEST_ABSTRACT, CATEGORY)
+    print(f"Paper belongs to category '{CATEGORY}': {result}")
 
 # TODO: implement the Instructor library for structured outputs to enhance
 #  the flexibility of model switching

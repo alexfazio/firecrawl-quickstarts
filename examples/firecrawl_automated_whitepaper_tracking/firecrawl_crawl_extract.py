@@ -154,5 +154,5 @@ if __name__ == "__main__":
     except (requests.RequestException, ValueError, KeyError) as e:
         print(f"Error processing URL {url}: {str(e)}")
 
-# TO-DO: create a streamlit ui to set environment variables and desired categories for the semantic filter
-# TO-DO: make the extract_paper_details function async so details are extracted in parallel
+# TODO: create a streamlit ui to set environment variables and desired categories for the semantic filter
+# TODO: make the extract_paper_details function async so details are extracted in parallel
