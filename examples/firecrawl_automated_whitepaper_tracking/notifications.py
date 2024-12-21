@@ -2,9 +2,43 @@ import os
 import asyncio
 import aiohttp
 from dotenv import load_dotenv
+from semantic_filter import belongs_to_category
 
 load_dotenv()
 
+# Categories of interest for notifications
+CATEGORIES_OF_INTEREST = [
+    "LLM Agents",
+    "AI Safety",
+    "Reinforcement Learning"
+    # Add more categories as needed
+]
+
+def should_notify(paper_details: dict, is_new_paper: bool) -> bool:
+    """
+    Determine if a notification should be sent for this paper.
+    
+    Args:
+        paper_details (dict): Dictionary containing paper details
+        is_new_paper (bool): Whether this is a new paper or an update
+        
+    Returns:
+        bool: True if notification should be sent, False otherwise
+    """
+    # First check if this is a new paper
+    if not is_new_paper:
+        return False
+        
+    # Then check if it belongs to any category of interest
+    for category in CATEGORIES_OF_INTEREST:
+        if belongs_to_category(
+            paper_details["paper_title"],
+            paper_details["abstract_body"],
+            category
+        ):
+            return True
+    
+    return False
 
 async def send_paper_notification(
     paper_title: str,

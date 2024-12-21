@@ -1,2 +1,8 @@
 .venv
 .env
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr

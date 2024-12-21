@@ -1,35 +1,25 @@
-import json
+import asyncio
+import pytz
+
+import requests
 import os
 import re
 from datetime import datetime
 from typing import Dict, Any
-import pytz
-import asyncio
-
-import requests
 from pydantic import BaseModel
 from firecrawl import FirecrawlApp
-from dotenv import load_dotenv, dotenv_values
+from dotenv import load_dotenv
 from database import Database
-from notifications import send_paper_notification
+from notifications import send_paper_notification, should_notify
 
 # Load environment variables
 load_dotenv()
 
-# Debug: Print environment variables
-config = dotenv_values(".env")
-if not config.get("POSTGRES_URL"):
-    raise ValueError("POSTGRES_URL not found in .env file")
-
-# Set environment variables manually
-for key, value in config.items():
-    os.environ[key] = value
-
-# Debug: Print the database URL (mask sensitive info)
-db_url = os.getenv("POSTGRES_URL")
-if not db_url:
+# Validate required environment variables
+if not os.getenv("POSTGRES_URL"):
     raise ValueError("POSTGRES_URL environment variable not set")
-print(f"Using database: {db_url.split('@')[1] if '@' in db_url else 'Invalid URL format'}")
+if not os.getenv("FIRECRAWL_API_KEY"):
+    raise ValueError("FIRECRAWL_API_KEY environment variable not set")
 
 __doc__ = """Module for crawling and extracting paper URLs and content of
 such URLs from the main HuggingFace Daily Papers page."""
@@ -145,7 +135,7 @@ if __name__ == "__main__":
             is_new_paper = db.add_paper(details)
             
             # Only notify if paper is new and meets criteria
-            if is_new_paper and should_notify(details):
+            if should_notify(details, is_new_paper):
                 asyncio.run(
                     send_paper_notification(
                         paper_title=details["paper_title"],
@@ -159,5 +149,8 @@ if __name__ == "__main__":
                         github_url=details["github_repo_url"]
                     )
                 )
-    except Exception as e:
+    except (requests.RequestException, ValueError, KeyError) as e:
         print(f"Error processing URL {url}: {str(e)}")
+
+# TO-DO: create a streamlit ui to set environment variables and desired categories for the semantic filter
+# TO-DO: make the extract_paper_details function async so details are extracted in parallel
