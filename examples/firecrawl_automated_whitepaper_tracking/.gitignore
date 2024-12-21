@@ -6,3 +6,6 @@
 *.iml
 *.iws
 *.ipr
+
+# GitHub Actions
+.github/workflows/.env

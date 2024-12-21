@@ -70,3 +70,5 @@ if __name__ == "__main__":
 
 # TODO: implement the Instructor library for structured outputs to enhance
 #  the flexibility of model switching
+# TODO: add examples to system prompt of abstract that are known to be 
+# in the category (agents)
