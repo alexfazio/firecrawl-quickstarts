@@ -28,6 +28,21 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
+      - name: Test Database Connection
+        env:
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+        run: |
+          poetry run python -c "
+          import os
+          from database import Database
+          try:
+              db = Database(os.getenv('POSTGRES_URL'))
+              print('Database connection successful!')
+          except Exception as e:
+              print(f'Database connection failed: {e}')
+              exit(1)
+          "
+
       - name: Run paper tracker
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
