@@ -32,6 +32,8 @@ jobs:
         env:
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         run: |
+          # Force IPv4
+          export PGOPTIONS='-c prefer_ipv4=true'
           poetry run python -c "
           import os
           from database import Database
@@ -49,7 +51,9 @@ jobs:
           FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-        run: poetry run python firecrawl_crawl_extract.py
+        run: |
+          export PGOPTIONS='-c prefer_ipv4=true'
+          poetry run python firecrawl_crawl_extract.py
 
       - name: Notify on Failure
         if: failure()
