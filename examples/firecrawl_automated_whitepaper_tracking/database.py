@@ -1,7 +1,6 @@
 from datetime import datetime
 from sqlalchemy import create_engine, Column, String, Integer, DateTime, ForeignKey, Text, ARRAY
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
-import socket
 
 Base = declarative_base()
 
@@ -47,29 +46,21 @@ class Database:
             elif 'sslmode' not in connection_string:
                 connection_string += '&sslmode=require'
             
-            # Force IPv4
+            # Basic connection args for the pooler
             connect_args = {
                 'sslmode': 'require',
-                'connect_timeout': 10,
-                'options': '-c prefer_ipv4=true'
+                'connect_timeout': 10
             }
-            
-            # Try to get IP directly
-            try:
-                import socket
-                socket.has_ipv6 = False
-                ip = socket.gethostbyname('db.zhxbejkyincpzcoihpvn.supabase.co')
-                connect_args['host'] = ip
-            except:
-                pass  # Fall back to hostname if IP resolution fails
             
             self.engine = create_engine(
                 connection_string,
                 connect_args=connect_args,
                 pool_pre_ping=True
             )
-            Base.metadata.create_all(self.engine)
+            
+            # Initialize sessionmaker
             self.Session = sessionmaker(bind=self.engine)
+            
         except Exception as e:
             raise RuntimeError(f"Failed to initialize database: {str(e)}")
 
@@ -152,5 +143,4 @@ if __name__ == "__main__":
     import os
 
     load_dotenv()
-
     db = Database(os.getenv("POSTGRES_URL"))
