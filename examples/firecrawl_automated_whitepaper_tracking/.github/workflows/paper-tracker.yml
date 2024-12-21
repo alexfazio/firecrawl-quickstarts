@@ -56,3 +56,10 @@ jobs:
         POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        
+    - name: Notify on Failure
+      if: failure()
+      env:
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      run: |
+        curl -H "Content-Type: application/json" -X POST -d '{"content":"⚠️ Paper Tracker workflow failed! Please check the GitHub Actions logs."}' $DISCORD_WEBHOOK_URL
