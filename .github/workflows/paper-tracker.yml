@@ -66,20 +66,41 @@ jobs:
         run: |
           echo "Testing database connection..."
           
+          # Debug environment (will show *** but that's expected)
+          echo "POSTGRES_URL is set: ${POSTGRES_URL:+yes}"
+          
           # Install required tools
           sudo apt-get update && sudo apt-get install -y postgresql-client
+          
+          # Test connection with psql first
+          echo "Testing with psql..."
+          PGPASSWORD=$(echo "$POSTGRES_URL" | sed -E 's/.*:([^@]+)@.*/\1/') \
+          psql "$(echo $POSTGRES_URL | sed 's|postgresql://[^:]*:[^@]*@|postgresql://postgres@|')" \
+               -c '\conninfo'
           
           poetry run python -c "
           import os
           import sys
+          from urllib.parse import urlparse
           
           print(f'Python version: {sys.version}')
           print(f'Python path: {sys.path}')
           
+          # Verify URL format before attempting connection
+          url = os.getenv('POSTGRES_URL')
+          if not url or url == '***':
+              print('Error: POSTGRES_URL is not properly set')
+              sys.exit(1)
+              
+          parsed = urlparse(url)
+          if not all([parsed.scheme, parsed.username, parsed.password, parsed.hostname]):
+              print('Error: POSTGRES_URL is missing required components')
+              sys.exit(1)
+          
           from database import Database
           try:
               print('Attempting database connection...')
-              db = Database(os.getenv('POSTGRES_URL'))
+              db = Database(url)
               print('Database connection successful!')
               print('Testing simple query...')
               result = db.engine.execute('SELECT 1').scalar()
