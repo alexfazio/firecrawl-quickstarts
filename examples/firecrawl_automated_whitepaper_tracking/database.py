@@ -51,9 +51,17 @@ class Database:
             connect_args = {
                 'sslmode': 'require',
                 'connect_timeout': 10,
-                'options': '-c prefer_ipv4=true',
-                'host': socket.gethostbyname('db.zhxbejkyincpzcoihpvn.supabase.co')
+                'options': '-c prefer_ipv4=true'
             }
+            
+            # Try to get IP directly
+            try:
+                import socket
+                socket.has_ipv6 = False
+                ip = socket.gethostbyname('db.zhxbejkyincpzcoihpvn.supabase.co')
+                connect_args['host'] = ip
+            except:
+                pass  # Fall back to hostname if IP resolution fails
             
             self.engine = create_engine(
                 connection_string,

@@ -44,25 +44,28 @@ jobs:
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         run: |
           echo "Testing database connection..."
-          # Force IPv4
-          export PGOPTIONS='-c prefer_ipv4=true'
           
-          # Resolve IP and add to hosts file
+          # Install required tools
+          sudo apt-get update && sudo apt-get install -y postgresql-client dnsutils net-tools
+          
+          # Force IPv4 DNS resolution
           echo "Resolving database IP..."
-          DB_IP=$(dig +short -4 db.zhxbejkyincpzcoihpvn.supabase.co | head -n1)
+          DB_IP=$(dig +short -4 db.zhxbejkyincpzcoihpvn.supabase.co @8.8.8.8 | grep -E '^[0-9]+\.' | head -n1)
+          if [ -z "$DB_IP" ]; then
+            echo "Failed to resolve IP address"
+            exit 1
+          fi
           echo "Database IP: $DB_IP"
-          echo "$DB_IP db.zhxbejkyincpzcoihpvn.supabase.co" | sudo tee -a /etc/hosts
           
-          # Test connection with netcat
+          # Add to hosts file
+          sudo bash -c "echo '$DB_IP db.zhxbejkyincpzcoihpvn.supabase.co' >> /etc/hosts"
+          
+          # Test connection
           echo "Testing TCP connection..."
-          nc -zv -4 db.zhxbejkyincpzcoihpvn.supabase.co 5432 || echo "TCP connection failed"
+          nc -zv -4 $DB_IP 5432 || echo "TCP connection failed"
           
-          # Install postgresql-client for testing
-          sudo apt-get update && sudo apt-get install -y postgresql-client
-          
-          # Test with psql
-          echo "Testing with psql..."
-          PGPASSWORD="${POSTGRES_URL#*:*@}" psql -h db.zhxbejkyincpzcoihpvn.supabase.co -p 5432 -U postgres -c "SELECT 1" || echo "PSQL test failed"
+          # Set PostgreSQL environment
+          export PGOPTIONS='-c prefer_ipv4=true'
           
           poetry run python -c "
           import os
@@ -74,6 +77,13 @@ jobs:
           
           print(f'Python version: {sys.version}')
           print(f'Python path: {sys.path}')
+          
+          # Override DNS resolution
+          def custom_getaddrinfo(*args, **kwargs):
+              return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('$DB_IP', 5432))]
+          
+          socket.getaddrinfo = custom_getaddrinfo
+          
           from database import Database
           try:
               print('Attempting database connection...')
@@ -86,8 +96,6 @@ jobs:
               print(f'Database connection failed: {str(e)}')
               print(f'Error type: {type(e).__name__}')
               print('Error details: ' + str(getattr(e, '__dict__', 'No details available')))
-              print('Host resolution:')
-              print(socket.gethostbyname('db.zhxbejkyincpzcoihpvn.supabase.co'))
               exit(1)
           "
 
