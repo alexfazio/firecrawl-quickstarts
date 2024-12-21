@@ -80,6 +80,7 @@ jobs:
           import os
           import sys
           from urllib.parse import urlparse
+          from sqlalchemy import text
           
           print(f'Python version: {sys.version}')
           print(f'Python path: {sys.path}')
@@ -101,8 +102,11 @@ jobs:
               db = Database(url)
               print('Database connection successful!')
               print('Testing simple query...')
-              result = db.engine.execute('SELECT 1').scalar()
-              print(f'Query result: {result}')
+              
+              with db.engine.connect() as conn:
+                  result = conn.execute(text('SELECT 1')).scalar()
+                  print(f'Query result: {result}')
+              
           except Exception as e:
               print(f'Database connection failed: {str(e)}')
               print(f'Error type: {type(e).__name__}')
