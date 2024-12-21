@@ -6,21 +6,39 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-async def send_price_alert(
-    product_name: str, old_price: float, new_price: float, url: str
+async def send_paper_notification(
+    paper_title: str,
+    authors: list,
+    abstract: str,
+    upvotes: int,
+    comments: int,
+    url: str,
+    pdf_url: str = None,
+    arxiv_url: str = None,
+    github_url: str = None
 ):
-    """Send a price drop alert to Discord"""
-    drop_percentage = ((old_price - new_price) / old_price) * 100
-
+    """Send a new paper notification to Discord"""
+    
+    # Create links section
+    links = []
+    if pdf_url:
+        links.append(f"[📄 PDF]({pdf_url})")
+    if arxiv_url:
+        links.append(f"[📝 arXiv]({arxiv_url})")
+    if github_url:
+        links.append(f"[💻 GitHub]({github_url})")
+    
     message = {
         "embeds": [
             {
-                "title": "Price Drop Alert! 🎉",
-                "description": f"**{product_name}**\nPrice dropped by {drop_percentage:.1f}%!\n"
-                f"Old price: ${old_price:.2f}\n"
-                f"New price: ${new_price:.2f}\n"
-                f"[View Product]({url})",
-                "color": 3066993,
+                "title": "📚 New Paper Published!",
+                "description": f"**{paper_title}**\n\n"
+                f"**Authors:** {', '.join(authors)}\n\n"
+                f"**Abstract:**\n{abstract[:500]}{'...' if len(abstract) > 500 else ''}\n\n"
+                f"**Stats:** 👍 {upvotes} | 💬 {comments}\n\n"
+                f"**Links:**\n{' • '.join(links)}\n\n"
+                f"[View on HuggingFace]({url})",
+                "color": 5814783,  # HF's purple color
             }
         ]
     }
@@ -33,4 +51,17 @@ async def send_price_alert(
 
 
 if __name__ == "__main__":
-    asyncio.run(send_price_alert("Test Product", 100, 90, "https://www.google.com"))
+    # Test notification
+    asyncio.run(
+        send_paper_notification(
+            paper_title="Test Paper Title",
+            authors=["Author 1", "Author 2"],
+            abstract="This is a test abstract for the paper notification system.",
+            upvotes=10,
+            comments=5,
+            url="https://huggingface.co/papers/test",
+            pdf_url="https://example.com/pdf",
+            arxiv_url="https://arxiv.org/abs/test",
+            github_url="https://github.com/test/repo"
+        )
+    )

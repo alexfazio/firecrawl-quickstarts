@@ -4,13 +4,32 @@ import re
 from datetime import datetime
 from typing import Dict, Any
 import pytz
+import asyncio
 
 import requests
 from pydantic import BaseModel
 from firecrawl import FirecrawlApp
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
+from database import Database
+from notifications import send_paper_notification
 
+# Load environment variables
 load_dotenv()
+
+# Debug: Print environment variables
+config = dotenv_values(".env")
+if not config.get("POSTGRES_URL"):
+    raise ValueError("POSTGRES_URL not found in .env file")
+
+# Set environment variables manually
+for key, value in config.items():
+    os.environ[key] = value
+
+# Debug: Print the database URL (mask sensitive info)
+db_url = os.getenv("POSTGRES_URL")
+if not db_url:
+    raise ValueError("POSTGRES_URL environment variable not set")
+print(f"Using database: {db_url.split('@')[1] if '@' in db_url else 'Invalid URL format'}")
 
 __doc__ = """Module for crawling and extracting paper URLs and content of
 such URLs from the main HuggingFace Daily Papers page."""
@@ -116,13 +135,29 @@ def get_todays_papers_url() -> str:
 if __name__ == "__main__":
     today_papers_url = get_todays_papers_url()
     urls = extract_paper_urls(today_papers_url)
-    paper_details_dict = {}  # Create a dictionary instead of a list
+    
+    db = Database(os.getenv("POSTGRES_URL"))
+    
     try:
         for url in urls:
             details = extract_paper_details(url)
-            paper_details_dict[url] = details
+            details["url"] = url
+            is_new_paper = db.add_paper(details)
+            
+            # Only notify if paper is new and meets criteria
+            if is_new_paper and should_notify(details):
+                asyncio.run(
+                    send_paper_notification(
+                        paper_title=details["paper_title"],
+                        authors=details["authors"].split(", "),
+                        abstract=details["abstract_body"],
+                        upvotes=details["number_of_upvotes"],
+                        comments=details["number_of_comments"],
+                        url=url,
+                        pdf_url=details["view_pdf_url"],
+                        arxiv_url=details["view_arxiv_page_url"],
+                        github_url=details["github_repo_url"]
+                    )
+                )
     except Exception as e:
         print(f"Error processing URL {url}: {str(e)}")
-    # Write the results to a JSON file
-    with open('paper_details.json', 'w', encoding='utf-8') as f:
-        json.dump(paper_details_dict, f, indent=4, ensure_ascii=False)

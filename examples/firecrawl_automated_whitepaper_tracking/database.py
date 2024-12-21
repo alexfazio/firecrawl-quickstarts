@@ -1,127 +1,131 @@
-from sqlalchemy import create_engine, Column, String, Float, DateTime, ForeignKey
+from sqlalchemy import create_engine, Column, String, Integer, DateTime, ForeignKey, Text, ARRAY
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
 from datetime import datetime
 
 Base = declarative_base()
 
 
-class Product(Base):
-    __tablename__ = "products"
+class Paper(Base):
+    """SQLAlchemy model representing a research paper in the database."""
+    __tablename__ = "papers"
 
     url = Column(String, primary_key=True)
-    prices = relationship(
-        "PriceHistory", back_populates="product", cascade="all, delete-orphan"
-    )
+    title = Column(String, nullable=False)
+    authors = Column(ARRAY(String), nullable=False)
+    abstract = Column(Text, nullable=False)
+    pdf_url = Column(String)
+    arxiv_url = Column(String)
+    github_url = Column(String)
+    publication_date = Column(DateTime, nullable=False)
+    submission_date = Column(DateTime, nullable=False)
+    metrics = relationship("PaperMetrics", back_populates="paper", cascade="all, delete-orphan")
 
 
-class PriceHistory(Base):
-    __tablename__ = "price_histories"
+class PaperMetrics(Base):
+    """SQLAlchemy model representing metrics for a research paper in the database."""
+    __tablename__ = "paper_metrics"
 
     id = Column(String, primary_key=True)
-    product_url = Column(String, ForeignKey("products.url"))
-    name = Column(String, nullable=False)
-    price = Column(Float, nullable=False)
-    currency = Column(String, nullable=False)
-    main_image_url = Column(String)
+    paper_url = Column(String, ForeignKey("papers.url"))
+    upvotes = Column(Integer, default=0)
+    comments = Column(Integer, default=0)
     timestamp = Column(DateTime, nullable=False)
-    product = relationship("Product", back_populates="prices")
+    paper = relationship("Paper", back_populates="metrics")
 
 
 class Database:
+    """Class for interacting with the database using SQLAlchemy."""
     def __init__(self, connection_string):
-        self.engine = create_engine(connection_string)
+        if not connection_string:
+            raise ValueError("Database connection string is not set")
+            
+        # Add SSL requirements if not present
+        if '?' not in connection_string:
+            connection_string += '?sslmode=require'
+        elif 'sslmode' not in connection_string:
+            connection_string += '&sslmode=require'
+            
+        self.engine = create_engine(
+            connection_string,
+            connect_args={
+                'sslmode': 'require'
+            }
+        )
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
 
-    def add_product(self, url):
+    def get_all_papers(self):
+        """Get all papers from the database"""
         session = self.Session()
         try:
-            # Create the product entry
-            product = Product(url=url)
-            session.merge(product)  # merge will update if exists, insert if not
-            session.commit()
+            return session.query(Paper).all()
         finally:
             session.close()
 
-    def product_exists(self, url):
-        session = self.Session()
-        try:
-            return session.query(Product).filter(Product.url == url).first() is not None
-        finally:
-            session.close()
-
-    def add_price(self, product_data):
-        session = self.Session()
-        try:
-            # First ensure the product exists
-            if not self.product_exists(product_data["url"]):
-                # Create the product if it doesn't exist
-                product = Product(url=product_data["url"])
-                session.add(product)
-                session.flush()  # Flush to ensure the product is created before adding price
-
-            # Convert timestamp string to datetime if it's a string
-            timestamp = product_data["timestamp"]
-            if isinstance(timestamp, str):
-                timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H-%M")
-
-            price_history = PriceHistory(
-                id=f"{product_data['url']}_{timestamp.strftime('%Y%m%d%H%M%S')}",
-                product_url=product_data["url"],
-                name=product_data["name"],
-                price=product_data["price"],
-                currency=product_data["currency"],
-                main_image_url=product_data["main_image_url"],
-                timestamp=timestamp,
-            )
-            session.add(price_history)
-            session.commit()
-        finally:
-            session.close()
-
-    def get_all_products(self):
-        session = self.Session()
-        try:
-            return session.query(Product).all()
-        finally:
-            session.close()
-
-    def get_price_history(self, url):
-        """Get price history for a product"""
+    def get_paper_metrics(self, url):
+        """Get metrics history for a paper"""
         session = self.Session()
         try:
             return (
-                session.query(PriceHistory)
-                .filter(PriceHistory.product_url == url)
-                .order_by(PriceHistory.timestamp.desc())
+                session.query(PaperMetrics)
+                .filter(PaperMetrics.paper_url == url)
+                .order_by(PaperMetrics.timestamp.desc())
                 .all()
             )
         finally:
             session.close()
 
-    def remove_all_products(self):
+    def add_paper(self, paper_data):
+        """Add or update a paper and its current metrics.
+        
+        Returns:
+            bool: True if this is a new paper, False if it's an update
+        """
         session = self.Session()
         try:
-            # First delete all price histories
-            session.query(PriceHistory).delete()
-            # Then delete all products
-            session.query(Product).delete()
+            # Check if paper already exists
+            existing_paper = session.query(Paper).filter(
+                Paper.url == paper_data["url"]
+            ).first()
+            
+            is_new_paper = existing_paper is None
+            
+            # Create/update the paper entry
+            paper = Paper(
+                url=paper_data["url"],
+                title=paper_data["paper_title"],
+                authors=paper_data["authors"].split(", "),
+                abstract=paper_data["abstract_body"],
+                pdf_url=paper_data["view_pdf_url"],
+                arxiv_url=paper_data["view_arxiv_page_url"],
+                github_url=paper_data["github_repo_url"],
+                publication_date=datetime(
+                    paper_data["utc_publication_date_year"],
+                    paper_data["utc_publication_date_month"],
+                    paper_data["utc_publication_date_day"]
+                ),
+                submission_date=datetime(
+                    paper_data["utc_submission_date_year"],
+                    paper_data["utc_submission_date_month"],
+                    paper_data["utc_submission_date_day"]
+                )
+            )
+            session.merge(paper)
+
+            # Add metrics
+            metrics = PaperMetrics(
+                id=f"{paper_data['url']}_{datetime.now().strftime('%Y%m%d%H%M%S')}",
+                paper_url=paper_data["url"],
+                upvotes=paper_data["number_of_upvotes"],
+                comments=paper_data["number_of_comments"],
+                timestamp=datetime.now()
+            )
+            session.add(metrics)
             session.commit()
+            
+            return is_new_paper
         finally:
             session.close()
-
-    # def remove_product(self, url):
-    #     """Remove a product and its price history"""
-    #     session = self.Session()
-    #     try:
-    #         product = session.query(Product).filter(Product.url == url).first()
-    #         if product:
-    #             session.delete(
-    #                 product
-    #             )  # This will also delete associated price history due to cascade
-    #             session.commit()
-    #     finally:
-    #         session.close()
 
 
 if __name__ == "__main__":
@@ -131,4 +135,3 @@ if __name__ == "__main__":
     load_dotenv()
 
     db = Database(os.getenv("POSTGRES_URL"))
-    db.remove_all_products()
