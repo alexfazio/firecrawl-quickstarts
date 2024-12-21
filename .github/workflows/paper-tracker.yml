@@ -2,7 +2,7 @@ name: Paper Tracker
 
 on:
   schedule:
-    - cron: '0 */6 * *'  # Run every 6 hours
+    - cron: '0 */6 * * *'  # Run every 6 hours (at minute 0 of every 6th hour)
   workflow_dispatch:  # Allow manual triggers
 
 jobs:
