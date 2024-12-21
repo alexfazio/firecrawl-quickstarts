@@ -99,3 +99,5 @@ if __name__ == "__main__":
             github_url="https://github.com/test/repo"
         )
     )
+
+# TO-DO: implement discord button for feedback about relevancy of notifications

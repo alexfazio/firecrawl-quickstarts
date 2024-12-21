@@ -56,4 +56,5 @@ if __name__ == "__main__":
     result = belongs_to_category(test_title, test_abstract, category)
     print(f"Paper belongs to category '{category}': {result}")
 
-# TODO: implement the Instructor library for structured outputs to enhance the flexibility of model switching
+# TODO: implement the Instructor library for structured outputs to enhance
+#  the flexibility of model switching
