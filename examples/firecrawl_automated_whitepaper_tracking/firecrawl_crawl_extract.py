@@ -1,11 +1,16 @@
-import asyncio
-import pytz
+__doc__ = """Module for crawling and extracting data from Hugging Face papers using Firecrawl.
+Module for crawling and extracting data from Hugging Face papers using Firecrawl.
+Handles paper metadata extraction and processing for the notification system.
+"""
 
-import requests
+import asyncio
 import os
 import re
 from datetime import datetime
 from typing import Dict, Any
+
+import pytz
+import requests
 from pydantic import BaseModel
 from firecrawl import FirecrawlApp
 from dotenv import load_dotenv
@@ -20,9 +25,6 @@ if not os.getenv("POSTGRES_URL"):
     raise ValueError("POSTGRES_URL environment variable not set")
 if not os.getenv("FIRECRAWL_API_KEY"):
     raise ValueError("FIRECRAWL_API_KEY environment variable not set")
-
-__doc__ = """Module for crawling and extracting paper URLs and content of
-such URLs from the main HuggingFace Daily Papers page."""
 
 def extract_paper_urls(target_url: str) -> list:
     """

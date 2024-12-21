@@ -1,3 +1,5 @@
+__doc__ = """Module for testing the Discord webhook."""
+
 import os
 from dotenv import load_dotenv
 import requests

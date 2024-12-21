@@ -1,3 +1,5 @@
+__doc__ = """Module for sending notifications about new research papers to Discord."""
+
 import os
 import asyncio
 import aiohttp
