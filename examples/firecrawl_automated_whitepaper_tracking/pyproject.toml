@@ -8,7 +8,7 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "3.10.16"
+python = "3.10.15"
 streamlit = "1.41.1"
 firecrawl-py = "1.6.8"
 pydantic = "2.10.4"
