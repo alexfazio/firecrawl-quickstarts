@@ -46,11 +46,17 @@ class Database:
             elif 'sslmode' not in connection_string:
                 connection_string += '&sslmode=require'
             
+            # Force IPv4
+            connect_args = {
+                'sslmode': 'require',
+                'connect_timeout': 10,
+                'options': '-c prefer_ipv4=true'
+            }
+            
             self.engine = create_engine(
                 connection_string,
-                connect_args={
-                    'sslmode': 'require'
-                }
+                connect_args=connect_args,
+                pool_pre_ping=True
             )
             Base.metadata.create_all(self.engine)
             self.Session = sessionmaker(bind=self.engine)
