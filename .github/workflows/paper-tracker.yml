@@ -2,7 +2,7 @@ name: Paper Tracker
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Run every 6 hours
+    - cron: '0 */6 * *'  # Run every 6 hours
   workflow_dispatch:  # Allow manual triggers
 
 jobs:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: firecrawl-quickstarts/examples/firecrawl_automated_whitepaper_tracking
+        working-directory: examples/firecrawl_automated_whitepaper_tracking
 
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +28,7 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
 
       - name: Install dependencies
-        working-directory: firecrawl-quickstarts/examples/firecrawl_automated_whitepaper_tracking
+        working-directory: examples/firecrawl_automated_whitepaper_tracking
         run: |
           poetry install
 
