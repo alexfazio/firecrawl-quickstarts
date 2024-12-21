@@ -1,7 +1,8 @@
 __doc__ = """Module for semantic filtering of research papers using OpenAI's API via OpenRouter."""
 
 import os
-from openai import OpenAI
+from json import JSONDecodeError
+from openai import OpenAI, OpenAIError  # noqa
 from pydantic import BaseModel
 
 # Configure OpenAI client with OpenRouter specifics
@@ -43,7 +44,7 @@ def belongs_to_category(paper_title: str, paper_abstract: str, desired_category:
             classification = CategoryMatch.model_validate_json(completion.choices[0].message.content)
             return classification.belongs_to_category and classification.confidence > 0.8
         return False
-    except Exception as e:
+    except (ValueError, JSONDecodeError, OpenAIError) as e:
         print(f"Error in semantic analysis: {e}")
         return False
 
