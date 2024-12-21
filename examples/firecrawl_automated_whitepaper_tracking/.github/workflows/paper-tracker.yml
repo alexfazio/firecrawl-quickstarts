@@ -1,0 +1,58 @@
+name: Paper Tracker
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Run every 6 hours
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  track-papers:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: firecrawl_automated_whitepaper_tracking  # Add this
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        
+    - name: Configure Poetry
+      run: |
+        poetry config virtualenvs.create false
+        
+    - name: Install Dependencies
+      run: |
+        poetry install
+        pip list  # List installed packages for debugging
+        
+    - name: Verify Environment Variables
+      run: |
+        # Check if env vars are set (without exposing values)
+        if [ -n "$FIRECRAWL_API_KEY" ]; then echo "FIRECRAWL_API_KEY is set"; else echo "FIRECRAWL_API_KEY is NOT set"; fi
+        if [ -n "$POSTGRES_URL" ]; then echo "POSTGRES_URL is set"; else echo "POSTGRES_URL is NOT set"; fi
+        if [ -n "$OPENROUTER_API_KEY" ]; then echo "OPENROUTER_API_KEY is set"; else echo "OPENROUTER_API_KEY is NOT set"; fi
+        if [ -n "$DISCORD_WEBHOOK_URL" ]; then echo "DISCORD_WEBHOOK_URL is set"; else echo "DISCORD_WEBHOOK_URL is NOT set"; fi
+      env:
+        FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+        POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+        OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        
+    - name: Run Paper Tracker
+      run: |
+        # Add Python error traceback
+        export PYTHONUNBUFFERED=1
+        poetry run python -u firecrawl_crawl_extract.py
+      env:
+        FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+        POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+        OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
