@@ -72,11 +72,9 @@ jobs:
           # Install required tools
           sudo apt-get update && sudo apt-get install -y postgresql-client
           
-          # Test connection with psql first
+          # Test connection with psql using full URL
           echo "Testing with psql..."
-          PGPASSWORD=$(echo "$POSTGRES_URL" | sed -E 's/.*:([^@]+)@.*/\1/') \
-          psql "$(echo $POSTGRES_URL | sed 's|postgresql://[^:]*:[^@]*@|postgresql://postgres@|')" \
-               -c '\conninfo'
+          psql "$POSTGRES_URL" -c '\conninfo'
           
           poetry run python -c "
           import os
