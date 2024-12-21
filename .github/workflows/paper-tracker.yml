@@ -26,12 +26,30 @@ jobs:
         poetry config virtualenvs.create false
         
     - name: Install Dependencies
-      run: poetry install
+      run: |
+        poetry install
+        pip list  # List installed packages for debugging
         
-    - name: Run Paper Tracker
+    - name: Verify Environment Variables
+      run: |
+        # Check if env vars are set (without exposing values)
+        if [ -n "$FIRECRAWL_API_KEY" ]; then echo "FIRECRAWL_API_KEY is set"; else echo "FIRECRAWL_API_KEY is NOT set"; fi
+        if [ -n "$POSTGRES_URL" ]; then echo "POSTGRES_URL is set"; else echo "POSTGRES_URL is NOT set"; fi
+        if [ -n "$OPENROUTER_API_KEY" ]; then echo "OPENROUTER_API_KEY is set"; else echo "OPENROUTER_API_KEY is NOT set"; fi
+        if [ -n "$DISCORD_WEBHOOK_URL" ]; then echo "DISCORD_WEBHOOK_URL is set"; else echo "DISCORD_WEBHOOK_URL is NOT set"; fi
       env:
         FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
         POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-      run: poetry run python firecrawl_crawl_extract.py
+        
+    - name: Run Paper Tracker
+      run: |
+        # Add Python error traceback
+        export PYTHONUNBUFFERED=1
+        poetry run python -u firecrawl_crawl_extract.py
+      env:
+        FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+        POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+        OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
