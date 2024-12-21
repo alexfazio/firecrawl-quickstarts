@@ -1,0 +1,98 @@
+name: Paper Tracker
+
+on:
+  schedule:
+    - cron: '0 */6 * *'  # Run every 6 hours
+  workflow_dispatch:  # Allow manual triggers
+
+jobs:
+  track-papers:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/firecrawl_automated_whitepaper_tracking
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # To see recent changes
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+
+      - name: Install dependencies
+        working-directory: examples/firecrawl_automated_whitepaper_tracking
+        run: |
+          poetry install
+
+      - name: Verify Environment
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Directory contents:"
+          ls -la
+          echo "Python version:"
+          python --version
+          echo "Pip version:"
+          pip --version
+          echo "Environment variables (sanitized):"
+          env | grep -v -e PASSWORD -e KEY -e TOKEN -e SECRET
+          echo "Checking for .env file:"
+          test -f .env && echo ".env exists" || echo ".env not found"
+
+      - name: Test Database Connection
+        env:
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+        run: |
+          echo "Testing database connection..."
+          echo "POSTGRES_URL format check (sanitized):"
+          echo "${POSTGRES_URL//:*@/:***@}"  # Show URL structure without credentials
+          export PGOPTIONS='-c prefer_ipv4=true'
+          # Add verbose logging to Python
+          export PYTHONVERBOSE=1
+          poetry run python -c "
+          import os
+          import sys
+          print(f'Python version: {sys.version}')
+          print(f'Python path: {sys.path}')
+          from database import Database
+          try:
+              print('Attempting database connection...')
+              db = Database(os.getenv('POSTGRES_URL'))
+              print('Database connection successful!')
+              print('Testing simple query...')
+              result = db.engine.execute('SELECT 1').scalar()
+              print(f'Query result: {result}')
+          except Exception as e:
+              print(f'Database connection failed: {str(e)}')
+              print(f'Error type: {type(e).__name__}')
+              print(f'Error details: {getattr(e, "__dict__", {})}')
+              exit(1)
+          "
+
+      - name: Run paper tracker
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          echo "Starting paper tracker..."
+          export PGOPTIONS='-c prefer_ipv4=true'
+          export PYTHONUNBUFFERED=1  # Real-time output
+          export PYTHONVERBOSE=1  # Verbose Python logging
+          poetry run python -u firecrawl_crawl_extract.py
+
+      - name: Notify on Failure
+        if: failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          echo "Sending failure notification..."
+          curl -v -H "Content-Type: application/json" -X POST -d '{"content":"⚠️ Paper Tracker workflow failed! Please check the GitHub Actions logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' $DISCORD_WEBHOOK_URL
