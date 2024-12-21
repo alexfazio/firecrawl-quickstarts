@@ -2,7 +2,7 @@ name: Paper Tracker
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Run every 6 hours (at minute 0 of every 6th hour)
+    - cron: '0 */6 * * *'  # Run every 6 hours
   workflow_dispatch:  # Allow manual triggers
 
 jobs:
@@ -10,50 +10,41 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: firecrawl-quickstarts/examples/firecrawl_automated_whitepaper_tracking
+        working-directory: examples/firecrawl_automated_whitepaper_tracking
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # To see recent changes
+          fetch-depth: 2
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.10.15'
           cache: 'pip'
+
+      - name: Verify Directory
+        run: |
+          pwd
+          ls -la
+          echo "Current directory structure:"
+          tree -L 3
 
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
+          poetry --version
 
       - name: Install dependencies
-        working-directory: firecrawl-quickstarts/examples/firecrawl_automated_whitepaper_tracking
         run: |
           poetry install
-
-      - name: Verify Environment
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Directory contents:"
-          ls -la
-          echo "Python version:"
-          python --version
-          echo "Pip version:"
-          pip --version
-          echo "Environment variables (sanitized):"
-          env | grep -v -e PASSWORD -e KEY -e TOKEN -e SECRET
-          echo "Checking for .env file:"
-          test -f .env && echo ".env exists" || echo ".env not found"
 
       - name: Test Database Connection
         env:
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         run: |
           echo "Testing database connection..."
-          # Force IPv4
           export PGOPTIONS='-c prefer_ipv4=true'
-          # Add host entry to force IPv4
           echo "$(dig +short db.zhxbejkyincpzcoihpvn.supabase.co | head -n1) db.zhxbejkyincpzcoihpvn.supabase.co" | sudo tee -a /etc/hosts
           
           poetry run python -c "
@@ -72,7 +63,7 @@ jobs:
           except Exception as e:
               print(f'Database connection failed: {str(e)}')
               print(f'Error type: {type(e).__name__}')
-              print(f'Error details: {e.__dict__ if hasattr(e, "__dict__") else "No details available"}')
+              print('Error details: ' + str(getattr(e, '__dict__', 'No details available')))
               exit(1)
           "
 
@@ -83,16 +74,12 @@ jobs:
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
-          echo "Starting paper tracker..."
           export PGOPTIONS='-c prefer_ipv4=true'
-          export PYTHONUNBUFFERED=1  # Real-time output
-          export PYTHONVERBOSE=1  # Verbose Python logging
-          poetry run python -u firecrawl_crawl_extract.py
+          poetry run python firecrawl_crawl_extract.py
 
       - name: Notify on Failure
         if: failure()
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          echo "Sending failure notification..."
-          curl -v -H "Content-Type: application/json" -X POST -d '{"content":"⚠️ Paper Tracker workflow failed! Please check the GitHub Actions logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' $DISCORD_WEBHOOK_URL
+          curl -H "Content-Type: application/json" -X POST -d '{"content":"⚠️ Paper Tracker workflow failed! Please check the GitHub Actions logs."}' $DISCORD_WEBHOOK_URL
