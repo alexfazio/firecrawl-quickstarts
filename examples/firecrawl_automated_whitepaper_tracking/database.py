@@ -1,6 +1,7 @@
 from datetime import datetime
 from sqlalchemy import create_engine, Column, String, Integer, DateTime, ForeignKey, Text, ARRAY
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
+import socket
 
 Base = declarative_base()
 
@@ -50,7 +51,8 @@ class Database:
             connect_args = {
                 'sslmode': 'require',
                 'connect_timeout': 10,
-                'options': '-c prefer_ipv4=true'
+                'options': '-c prefer_ipv4=true',
+                'host': socket.gethostbyname('db.zhxbejkyincpzcoihpvn.supabase.co')
             }
             
             self.engine = create_engine(
