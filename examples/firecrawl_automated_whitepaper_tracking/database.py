@@ -1,14 +1,13 @@
 from datetime import datetime
-from sqlalchemy import create_engine, Column, String, Integer, DateTime, ForeignKey, Text, ARRAY
+from sqlalchemy import (
+    create_engine, Column, String, Integer, DateTime, ForeignKey, Text, ARRAY
+)
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
 
 Base = declarative_base()
 
-
 class Paper(Base):
-    """SQLAlchemy model representing a research paper in the database."""
     __tablename__ = "papers"
-
     url = Column(String, primary_key=True)
     title = Column(String, nullable=False)
     authors = Column(ARRAY(String), nullable=False)
@@ -22,9 +21,7 @@ class Paper(Base):
 
 
 class PaperMetrics(Base):
-    """SQLAlchemy model representing metrics for a research paper in the database."""
     __tablename__ = "paper_metrics"
-
     id = Column(String, primary_key=True)
     paper_url = Column(String, ForeignKey("papers.url"))
     upvotes = Column(Integer, default=0)
@@ -38,31 +35,22 @@ class Database:
     def __init__(self, connection_string):
         if not connection_string:
             raise ValueError("Database connection string is not set")
-        
-        try:
-            # Add SSL requirements if not present
-            if '?' not in connection_string:
-                connection_string += '?sslmode=require'
-            elif 'sslmode' not in connection_string:
-                connection_string += '&sslmode=require'
-            
-            # Basic connection args for the pooler
-            connect_args = {
-                'sslmode': 'require',
-                'connect_timeout': 10
-            }
-            
-            self.engine = create_engine(
-                connection_string,
-                connect_args=connect_args,
-                pool_pre_ping=True
-            )
-            
-            # Initialize sessionmaker
-            self.Session = sessionmaker(bind=self.engine)
-            
-        except Exception as e:
-            raise RuntimeError(f"Failed to initialize database: {str(e)}")
+
+        # Ensure sslmode=require is appended
+        if '?' not in connection_string:
+            connection_string += '?sslmode=require'
+        elif 'sslmode' not in connection_string:
+            connection_string += '&sslmode=require'
+
+        self.engine = create_engine(
+            connection_string,
+            pool_pre_ping=True  # Pre-ping helps keep connections alive
+        )
+
+        # If you want auto table creation, keep this
+        Base.metadata.create_all(self.engine)
+
+        self.Session = sessionmaker(bind=self.engine)
 
     def get_all_papers(self):
         """Get all papers from the database"""

@@ -2,8 +2,8 @@ name: Paper Tracker
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Run every 6 hours
-  workflow_dispatch:  # Allow manual triggers
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   track-papers:
@@ -13,43 +13,14 @@ jobs:
         working-directory: examples/firecrawl_automated_whitepaper_tracking
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
+      - name: Check out repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10.15'
+          python-version: '3.10'
           cache: 'pip'
-
-      - name: Debug DNS
-        run: |
-          echo "Debugging DNS resolution..."
-          echo "1. Full DNS query response:"
-          dig db.zhxbejkyincpzcoihpvn.supabase.co
-          
-          echo "2. Checking for both IPv4 (A) and IPv6 (AAAA) records:"
-          echo "A records:"
-          dig +short A db.zhxbejkyincpzcoihpvn.supabase.co
-          echo "AAAA records:"
-          dig +short AAAA db.zhxbejkyincpzcoihpvn.supabase.co
-          
-          echo "3. Verifying Supabase domain is accessible:"
-          dig +short supabase.co
-          
-          echo "4. Environment check:"
-          echo "POSTGRES_URL host (redacted for security):"
-          echo $POSTGRES_URL | sed -E 's/postgresql:\/\/[^@]+@([^:\/]+).*/\1/'
-          
-          echo "Done debugging DNS."
-
-      - name: Verify Directory
-        run: |
-          pwd
-          ls -la
-          echo "Current directory structure:"
-          tree -L 3
 
       - name: Install Poetry
         run: |
@@ -60,65 +31,19 @@ jobs:
         run: |
           poetry install
 
-      - name: Test Database Connection
+      - name: Test Database Connection (Optional)
         env:
-          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}  # <-- Must be port 6543 now
         run: |
-          echo "Testing database connection..."
-          
-          # Debug environment (will show *** but that's expected)
-          echo "POSTGRES_URL is set: ${POSTGRES_URL:+yes}"
-          
-          # Install required tools
+          echo "Testing database connection with psql..."
           sudo apt-get update && sudo apt-get install -y postgresql-client
-          
-          # Test connection with psql using full URL
-          echo "Testing with psql..."
           psql "$POSTGRES_URL" -c '\conninfo'
-          
-          poetry run python -c "
-          import os
-          import sys
-          from urllib.parse import urlparse
-          from sqlalchemy import text
-          
-          print(f'Python version: {sys.version}')
-          print(f'Python path: {sys.path}')
-          
-          # Verify URL format before attempting connection
-          url = os.getenv('POSTGRES_URL')
-          if not url or url == '***':
-              print('Error: POSTGRES_URL is not properly set')
-              sys.exit(1)
-              
-          parsed = urlparse(url)
-          if not all([parsed.scheme, parsed.username, parsed.password, parsed.hostname]):
-              print('Error: POSTGRES_URL is missing required components')
-              sys.exit(1)
-          
-          from database import Database
-          try:
-              print('Attempting database connection...')
-              db = Database(url)
-              print('Database connection successful!')
-              print('Testing simple query...')
-              
-              with db.engine.connect() as conn:
-                  result = conn.execute(text('SELECT 1')).scalar()
-                  print(f'Query result: {result}')
-              
-          except Exception as e:
-              print(f'Database connection failed: {str(e)}')
-              print(f'Error type: {type(e).__name__}')
-              print('Error details: ' + str(getattr(e, '__dict__', 'No details available')))
-              exit(1)
-          "
 
       - name: Run paper tracker
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
-          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}  # <-- Also port 6543 here
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           poetry run python firecrawl_crawl_extract.py
@@ -128,4 +53,6 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          curl -H "Content-Type: application/json" -X POST -d '{"content":"⚠️ Paper Tracker workflow failed! Please check the GitHub Actions logs."}' $DISCORD_WEBHOOK_URL
+          curl -H "Content-Type: application/json" -X POST \
+               -d '{"content":"⚠️ Paper Tracker workflow failed! Please check the GitHub Actions logs."}' \
+               $DISCORD_WEBHOOK_URL
