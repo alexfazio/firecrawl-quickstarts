@@ -20,19 +20,17 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '>3.9.7,<3.11'
+          python-version: '3.10'
           cache: 'pip'
 
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
-          poetry --version  # Verify Poetry installation
 
       - name: Install dependencies
+        working-directory: firecrawl-quickstarts/examples/firecrawl_automated_whitepaper_tracking
         run: |
-          poetry install --verbose  # Show detailed installation logs
-          poetry show  # List all installed packages
-          poetry env info  # Show environment info
+          poetry install
 
       - name: Verify Environment
         run: |

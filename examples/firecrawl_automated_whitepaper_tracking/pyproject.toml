@@ -8,18 +8,18 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = ">3.9.7,<3.11"
+python = "3.10.16"
 streamlit = "1.41.1"
-firecrawl-py = "*"
+firecrawl-py = "1.6.8"
 pydantic = "2.10.4"
-psycopg2-binary = "*"
-python-dotenv = "*"
+psycopg2-binary = "2.9.10"
+python-dotenv = "1.0.1"
 sqlalchemy = "*"
 pandas = "2.2.3"
 plotly = "5.24.1"
-aiohttp = "*"
+aiohttp = "3.11.11"
 altair = "5.5.0"
-watchdog = "*"
+watchdog = "6.0.0"
 openai = "1.58.1"
 
 

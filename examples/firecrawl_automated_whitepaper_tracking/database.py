@@ -38,21 +38,24 @@ class Database:
     def __init__(self, connection_string):
         if not connection_string:
             raise ValueError("Database connection string is not set")
+        
+        try:
+            # Add SSL requirements if not present
+            if '?' not in connection_string:
+                connection_string += '?sslmode=require'
+            elif 'sslmode' not in connection_string:
+                connection_string += '&sslmode=require'
             
-        # Add SSL requirements if not present
-        if '?' not in connection_string:
-            connection_string += '?sslmode=require'
-        elif 'sslmode' not in connection_string:
-            connection_string += '&sslmode=require'
-            
-        self.engine = create_engine(
-            connection_string,
-            connect_args={
-                'sslmode': 'require'
-            }
-        )
-        Base.metadata.create_all(self.engine)
-        self.Session = sessionmaker(bind=self.engine)
+            self.engine = create_engine(
+                connection_string,
+                connect_args={
+                    'sslmode': 'require'
+                }
+            )
+            Base.metadata.create_all(self.engine)
+            self.Session = sessionmaker(bind=self.engine)
+        except Exception as e:
+            raise RuntimeError(f"Failed to initialize database: {str(e)}")
 
     def get_all_papers(self):
         """Get all papers from the database"""
