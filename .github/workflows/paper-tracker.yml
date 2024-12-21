@@ -23,6 +23,27 @@ jobs:
           python-version: '3.10.15'
           cache: 'pip'
 
+      - name: Debug DNS
+        run: |
+          echo "Debugging DNS resolution..."
+          echo "1. Full DNS query response:"
+          dig db.zhxbejkyincpzcoihpvn.supabase.co
+          
+          echo "2. Checking for both IPv4 (A) and IPv6 (AAAA) records:"
+          echo "A records:"
+          dig +short A db.zhxbejkyincpzcoihpvn.supabase.co
+          echo "AAAA records:"
+          dig +short AAAA db.zhxbejkyincpzcoihpvn.supabase.co
+          
+          echo "3. Verifying Supabase domain is accessible:"
+          dig +short supabase.co
+          
+          echo "4. Environment check:"
+          echo "POSTGRES_URL host (redacted for security):"
+          echo $POSTGRES_URL | sed -E 's/postgresql:\/\/[^@]+@([^:\/]+).*/\1/'
+          
+          echo "Done debugging DNS."
+
       - name: Verify Directory
         run: |
           pwd
@@ -46,43 +67,14 @@ jobs:
           echo "Testing database connection..."
           
           # Install required tools
-          sudo apt-get update && sudo apt-get install -y postgresql-client dnsutils net-tools
-          
-          # Force IPv4 DNS resolution
-          echo "Resolving database IP..."
-          DB_IP=$(dig +short -4 db.zhxbejkyincpzcoihpvn.supabase.co @8.8.8.8 | grep -E '^[0-9]+\.' | head -n1)
-          if [ -z "$DB_IP" ]; then
-            echo "Failed to resolve IP address"
-            exit 1
-          fi
-          echo "Database IP: $DB_IP"
-          
-          # Add to hosts file
-          sudo bash -c "echo '$DB_IP db.zhxbejkyincpzcoihpvn.supabase.co' >> /etc/hosts"
-          
-          # Test connection
-          echo "Testing TCP connection..."
-          nc -zv -4 $DB_IP 5432 || echo "TCP connection failed"
-          
-          # Set PostgreSQL environment
-          export PGOPTIONS='-c prefer_ipv4=true'
+          sudo apt-get update && sudo apt-get install -y postgresql-client
           
           poetry run python -c "
           import os
           import sys
-          import socket
-          
-          # Force IPv4
-          socket.has_ipv6 = False
           
           print(f'Python version: {sys.version}')
           print(f'Python path: {sys.path}')
-          
-          # Override DNS resolution
-          def custom_getaddrinfo(*args, **kwargs):
-              return [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('$DB_IP', 5432))]
-          
-          socket.getaddrinfo = custom_getaddrinfo
           
           from database import Database
           try:
@@ -106,8 +98,6 @@ jobs:
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
-          # Force IPv4
-          export PGOPTIONS='-c prefer_ipv4=true'
           poetry run python firecrawl_crawl_extract.py
 
       - name: Notify on Failure
