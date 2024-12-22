@@ -21,7 +21,7 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 logger = setup_semantic_filter_logging()
 
 # Log OpenAI version after logger is configured
-logger.info(f"Using OpenAI version: {openai.__version__}")
+logger.info("Using OpenAI version: %s", openai.__version__)
 
 # Update the client initialization
 client = openai.OpenAI()
@@ -30,13 +30,13 @@ def log_function_call(func):
     """Decorator to log entry and exit of functions."""
     @wraps(func)
     def wrapper(*args, **kwargs):
-        logger.info(f"Entering {func.__name__}")
+        logger.info("Entering %s", func.__name__)
         try:
             result = func(*args, **kwargs)
-            logger.info(f"Exiting {func.__name__} successfully")
+            logger.info("Exiting %s successfully", func.__name__)
             return result
         except Exception as e:
-            logger.error(f"Error in {func.__name__}: {str(e)}")
+            logger.error("Error in %s: %s", func.__name__, str(e))
             raise
     return wrapper
 
@@ -55,7 +55,7 @@ def belongs_to_category(paper_title: str, paper_abstract: str, desired_category:
     Determine if a paper belongs to a specific category using
     an OpenAI model that supports structured outputs.
     """
-    logger.info(f"Analyzing paper: '{paper_title}' for category '{desired_category}'")
+    logger.info("Analyzing paper: '%s' for category '%s'", paper_title, desired_category)
     
     # Define the function schema following the function-calling format
     functions = [
@@ -105,7 +105,7 @@ def belongs_to_category(paper_title: str, paper_abstract: str, desired_category:
             function_call={"name": "classify_paper"}  # Force the function call
         )
     except Exception as e:
-        logger.error(f"Error during ChatCompletion request: {e}")
+        logger.error("Error during ChatCompletion request: %s", e)
         return False
 
     # Update the response parsing
@@ -118,8 +118,9 @@ def belongs_to_category(paper_title: str, paper_abstract: str, desired_category:
             
             classification = CategoryMatch(**parsed_args)
             logger.info(
-                f"Classification result: belongs={classification.belongs_to_category}, "
-                f"confidence={classification.confidence}"
+                "Classification result: belongs=%s, confidence=%s",
+                classification.belongs_to_category,
+                classification.confidence
             )
             return classification.belongs_to_category and classification.confidence > 0.8
 
@@ -127,7 +128,7 @@ def belongs_to_category(paper_title: str, paper_abstract: str, desired_category:
         return False
 
     except (JSONDecodeError, ValidationError) as e:
-        logger.error(f"Error parsing or validating classification result: {e}")
+        logger.error("Error parsing or validating classification result: %s", e)
         return False
 
 if __name__ == "__main__":
@@ -140,7 +141,7 @@ if __name__ == "__main__":
     )
     CATEGORY = "LLM Agents"
     result = belongs_to_category(TEST_TITLE, TEST_ABSTRACT, CATEGORY)
-    logger.info(f"Test result for category '{CATEGORY}': {result}")
+    logger.info("Test result for category '%s': %s", CATEGORY, result)
 
 # TODO: implement the Instructor library for structured outputs to enhance
 #  the flexibility of model switching
