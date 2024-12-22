@@ -12,6 +12,9 @@ logger = setup_database_logging()
 Base = declarative_base()
 
 class Paper(Base):
+    """SQLAlchemy model for storing research papers scraped from the Hugging Face daily papers page.
+    Each paper entry includes its URL, title, authors, abstract, associated URLs (PDF, arXiv, GitHub),
+    and both publication and submission dates."""
     __tablename__ = "papers"
     url = Column(String, primary_key=True)
     title = Column(String, nullable=False)
@@ -26,6 +29,9 @@ class Paper(Base):
 
 
 class PaperMetrics(Base):
+    """SQLAlchemy model for tracking engagement metrics from the Hugging Face daily papers page.
+    Each entry represents a point-in-time snapshot of a paper's upvotes and comments count,
+    with a composite ID format of '{paper_url}_{timestamp}' for tracking historical trends."""
     __tablename__ = "paper_metrics"
     id = Column(String, primary_key=True)
     paper_url = Column(String, ForeignKey("papers.url"))
@@ -49,7 +55,7 @@ class Database:
         elif 'sslmode' not in connection_string:
             connection_string += '&sslmode=require'
 
-        logger.debug(f"Creating engine with connection string: {connection_string.split('?')[0]}")
+        logger.debug("Creating engine with connection string: %s", connection_string.split('?')[0])
         self.engine = create_engine(
             connection_string,
             pool_pre_ping=True  # Pre-ping helps keep connections alive
@@ -66,17 +72,17 @@ class Database:
         session = self.Session()
         try:
             papers = session.query(Paper).all()
-            logger.info(f"Retrieved {len(papers)} papers from database")
+            logger.info("Retrieved %d papers from database", len(papers))
             return papers
         except Exception as e:
-            logger.error(f"Error fetching papers: {str(e)}")
+            logger.error("Error fetching papers: %s", str(e))
             raise
         finally:
             session.close()
 
     def get_paper_metrics(self, url):
         """Get metrics history for a paper"""
-        logger.info(f"Fetching metrics for paper: {url}")
+        logger.info("Fetching metrics for paper: %s", url)
         session = self.Session()
         try:
             metrics = (
@@ -85,10 +91,10 @@ class Database:
                 .order_by(PaperMetrics.timestamp.desc())
                 .all()
             )
-            logger.info(f"Retrieved {len(metrics)} metric entries for paper {url}")
+            logger.info("Retrieved %d metric entries for paper %s", len(metrics), url)
             return metrics
         except Exception as e:
-            logger.error(f"Error fetching metrics for {url}: {str(e)}")
+            logger.error("Error fetching metrics for %s: %s", url, str(e))
             raise
         finally:
             session.close()
@@ -99,7 +105,7 @@ class Database:
         Returns:
             bool: True if this is a new paper, False if it's an update
         """
-        logger.info(f"Adding/updating paper: {paper_data['url']}")
+        logger.info("Adding/updating paper: %s", paper_data['url'])
         session = self.Session()
         try:
             # Check if paper already exists
@@ -109,7 +115,7 @@ class Database:
             
             is_new_paper = existing_paper is None
             action = "Adding new" if is_new_paper else "Updating existing"
-            logger.info(f"{action} paper: {paper_data['url']}")
+            logger.info("%s paper: %s", action, paper_data['url'])
 
             # Date handling with logging
             try:
@@ -119,7 +125,7 @@ class Database:
                     paper_data["utc_publication_date_day"]
                 )
             except ValueError as e:
-                logger.warning(f"Invalid publication date in {paper_data['url']}: {e}")
+                logger.warning("Invalid publication date in %s: %s", paper_data['url'], e)
                 publication_date = datetime.now()
 
             try:
@@ -129,7 +135,7 @@ class Database:
                     paper_data["utc_submission_date_day"]
                 )
             except ValueError as e:
-                logger.warning(f"Invalid submission date in {paper_data['url']}: {e}")
+                logger.warning("Invalid submission date in %s: %s", paper_data['url'], e)
                 submission_date = datetime.now()
 
             # Create/update the paper entry
@@ -144,7 +150,7 @@ class Database:
                 publication_date=publication_date,
                 submission_date=submission_date
             )
-            logger.debug(f"Merging paper data for {paper_data['url']}")
+            logger.debug("Merging paper data for %s", paper_data['url'])
             session.merge(paper)
 
             # Add metrics
@@ -155,14 +161,16 @@ class Database:
                 comments=paper_data["number_of_comments"],
                 timestamp=datetime.now()
             )
-            logger.debug(f"Adding metrics for {paper_data['url']}: {metrics.upvotes} upvotes, {metrics.comments} comments")
+            logger.debug("Adding metrics for %s: %d upvotes, %d comments", 
+                        paper_data['url'], metrics.upvotes, metrics.comments)
             session.add(metrics)
             session.commit()
-            logger.info(f"Successfully {'added' if is_new_paper else 'updated'} paper and metrics for {paper_data['url']}")
+            logger.info("Successfully %s paper and metrics for %s", 
+                       'added' if is_new_paper else 'updated', paper_data['url'])
             
             return is_new_paper
         except Exception as e:
-            logger.error(f"Error adding/updating paper {paper_data['url']}: {str(e)}")
+            logger.error("Error adding/updating paper %s: %s", paper_data['url'], str(e))
             raise
         finally:
             session.close()
@@ -201,21 +209,21 @@ if __name__ == "__main__":
         # Test adding a paper
         logger.info("Testing paper addition...")
         is_new = db.add_paper(test_paper)
-        print(f"Paper added successfully (new: {is_new})")
+        logger.info("Paper added successfully (new: %s)", is_new)
 
         # Test retrieving all papers
         logger.info("Testing paper retrieval...")
         papers = db.get_all_papers()
-        print(f"Retrieved {len(papers)} papers")
+        logger.info("Retrieved %d papers", len(papers))
 
         # Test retrieving metrics for the test paper
         logger.info("Testing metrics retrieval...")
         metrics = db.get_paper_metrics(test_paper["url"])
-        print(f"Retrieved {len(metrics)} metrics entries for test paper")
+        logger.info("Retrieved %d metrics entries for test paper", len(metrics))
         
-        print("\nTest completed successfully! ✅")
+        logger.info("Test completed successfully! ✅")
         
     except Exception as e:
-        print(f"\nTest failed! ❌\nError: {str(e)}")
+        logger.error("Test failed! ❌ Error: %s", str(e))
 
 # TODO: stream the DB contents to a Notion database a la Chief AI Officer database

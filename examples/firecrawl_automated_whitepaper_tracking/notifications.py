@@ -11,8 +11,9 @@ load_dotenv()
 # Categories of interest for notifications
 CATEGORIES_OF_INTEREST = [
     "LLM Agents",
-    "AI Safety",
-    "Reinforcement Learning"
+    "Agentic AI",
+    "Agentic Workflows",
+    "AI Agents",
     # Add more categories as needed
 ]
 
@@ -71,7 +72,7 @@ async def send_paper_notification(
                 "description": f"**{paper_title}**\n\n"
                 f"**Authors:** {', '.join(authors)}\n\n"
                 f"**Abstract:**\n{abstract[:500]}{'...' if len(abstract) > 500 else ''}\n\n"
-                f"**Stats:** 👍 {upvotes} | 💬 {comments}\n\n"
+                f"**Stats:** ⬆️ {upvotes} | 💬 {comments}\n\n"
                 f"**Links:**\n{' • '.join(links)}\n\n"
                 f"[View on HuggingFace]({url})",
                 "color": 5814783,  # HF's purple color
@@ -82,7 +83,7 @@ async def send_paper_notification(
     try:
         async with aiohttp.ClientSession() as session:
             await session.post(os.getenv("DISCORD_WEBHOOK_URL"), json=message)
-    except Exception as e:
+    except (aiohttp.ClientError, ValueError) as e:
         print(f"Error sending Discord notification: {e}")
 
 
