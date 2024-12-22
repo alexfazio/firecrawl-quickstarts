@@ -166,11 +166,28 @@ def get_todays_papers_url() -> str:
     return f"https://huggingface.co/papers?date={today}"
 
 if __name__ == "__main__":
-    logger.info("Starting paper crawling process")
-    today_papers_url = get_todays_papers_url()
-    logger.info(f"Today's papers URL: {today_papers_url}")
+    import sys
+    import argparse
     
-    urls = extract_paper_urls(today_papers_url)
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description='Crawl and extract papers from HuggingFace.')
+    parser.add_argument('--url', type=str, help='Full URL to crawl (e.g., https://huggingface.co/papers?date=2024-12-19)')
+    parser.add_argument('--date', type=str, help='Date in YYYY-MM-DD format (e.g., 2024-12-19)')
+    
+    args = parser.parse_args()
+    
+    # Determine which URL to use
+    if args.url:
+        papers_url = args.url
+        logger.info(f"Using provided full URL: {papers_url}")
+    elif args.date:
+        papers_url = f"https://huggingface.co/papers?date={args.date}"
+        logger.info(f"Using URL for specified date: {papers_url}")
+    else:
+        papers_url = get_todays_papers_url()
+        logger.info(f"Using today's papers URL: {papers_url}")
+    
+    urls = extract_paper_urls(papers_url)
     logger.info(f"Found {len(urls)} papers to process")
     
     db = Database(os.getenv("POSTGRES_URL"))
@@ -211,3 +228,4 @@ if __name__ == "__main__":
 
 # TODO: create a streamlit ui to set environment variables and desired categories for the semantic filter
 # TODO: make the extract_paper_details function async so details are extracted in parallel
+# TODO: make all functions async to avoid redudant code
