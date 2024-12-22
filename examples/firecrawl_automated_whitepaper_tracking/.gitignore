@@ -6,6 +6,14 @@
 *.iml
 *.iws
 *.ipr
+*.xml
+.idea_modules/
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+.python-version
 
 # GitHub Actions
 .github/workflows/.env

@@ -4,11 +4,14 @@ Handles paper metadata extraction and processing for the notification system.
 """
 
 import asyncio
+import logging
+from logging.handlers import RotatingFileHandler
 import os
 import re
 from datetime import datetime
 from typing import Dict, Any
 
+# Third-party imports
 import pytz
 import requests
 from pydantic import BaseModel
@@ -16,40 +19,10 @@ from firecrawl import FirecrawlApp
 from dotenv import load_dotenv
 from database import Database
 from notifications import send_paper_notification, should_notify
-import logging
-from logging.handlers import RotatingFileHandler
-
-# Configure logging
-def setup_logging():
-    """Configure logging with both file and console handlers."""
-    logger = logging.getLogger('firecrawl_crawler')
-    logger.setLevel(logging.INFO)
-    
-    # Create formatters
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
-    
-    # Create and configure file handler (rotating log files, max 5MB each, keep 5 backup files)
-    file_handler = RotatingFileHandler(
-        'crawler.log', maxBytes=5*1024*1024, backupCount=5
-    )
-    file_handler.setLevel(logging.INFO)
-    file_handler.setFormatter(formatter)
-    
-    # Create and configure console handler
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.INFO)
-    console_handler.setFormatter(formatter)
-    
-    # Add handlers to logger
-    logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
-    
-    return logger
+from logging_config import setup_crawler_logging
 
 # Initialize logger
-logger = setup_logging()
+logger = setup_crawler_logging()
 
 # Load environment variables
 load_dotenv()

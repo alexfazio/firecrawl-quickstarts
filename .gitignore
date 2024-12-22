@@ -84,3 +84,17 @@ fabric.properties
 .DS_Store
 .DS_Store?
 ._*
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+*.xml
+.idea_modules/
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+.python-version

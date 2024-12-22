@@ -9,6 +9,7 @@ from functools import wraps
 from json import JSONDecodeError
 from pydantic import BaseModel, ValidationError
 from dotenv import load_dotenv
+from logging_config import setup_semantic_filter_logging
 
 # Load environment variables
 load_dotenv()
@@ -16,16 +17,8 @@ load_dotenv()
 # Configure OpenAI API key directly
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(funcName)s - %(message)s',
-    handlers=[
-        logging.FileHandler(f'semantic_filter_{datetime.now().strftime("%Y%m%d")}.log'),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+# Configure logging using centralized configuration
+logger = setup_semantic_filter_logging()
 
 # Log OpenAI version after logger is configured
 logger.info(f"Using OpenAI version: {openai.__version__}")

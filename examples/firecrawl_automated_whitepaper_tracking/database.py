@@ -4,18 +4,10 @@ from sqlalchemy import (
     create_engine, Column, String, Integer, DateTime, ForeignKey, Text, ARRAY
 )
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
+from logging_config import setup_database_logging
 
-# Configure logging
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-# Create console handler if no handlers exist
-if not logger.handlers:
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
+# Configure logging using centralized configuration
+logger = setup_database_logging()
 
 Base = declarative_base()
 
@@ -179,15 +171,51 @@ class Database:
 if __name__ == "__main__":
     from dotenv import load_dotenv
     import os
-
-    # Configure logging for main execution
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
     
     load_dotenv()
     logger.info("Starting database module directly")
+    
+    # Initialize database connection
     db = Database(os.getenv("POSTGRES_URL"))
+    
+    # Create a test paper entry
+    test_paper = {
+        "url": "https://test.paper/123",
+        "paper_title": "Test Paper for Database Module",
+        "authors": "John Doe, Jane Smith",
+        "abstract_body": "This is a test paper to verify database functionality.",
+        "view_pdf_url": "https://test.paper/123/pdf",
+        "view_arxiv_page_url": "https://arxiv.org/abs/test.123",
+        "github_repo_url": "https://github.com/test/repo",
+        "utc_publication_date_year": 2024,
+        "utc_publication_date_month": 3,
+        "utc_publication_date_day": 15,
+        "utc_submission_date_year": 2024,
+        "utc_submission_date_month": 3,
+        "utc_submission_date_day": 1,
+        "number_of_upvotes": 42,
+        "number_of_comments": 7
+    }
+
+    try:
+        # Test adding a paper
+        logger.info("Testing paper addition...")
+        is_new = db.add_paper(test_paper)
+        print(f"Paper added successfully (new: {is_new})")
+
+        # Test retrieving all papers
+        logger.info("Testing paper retrieval...")
+        papers = db.get_all_papers()
+        print(f"Retrieved {len(papers)} papers")
+
+        # Test retrieving metrics for the test paper
+        logger.info("Testing metrics retrieval...")
+        metrics = db.get_paper_metrics(test_paper["url"])
+        print(f"Retrieved {len(metrics)} metrics entries for test paper")
+        
+        print("\nTest completed successfully! ✅")
+        
+    except Exception as e:
+        print(f"\nTest failed! ❌\nError: {str(e)}")
 
 # TODO: stream the DB contents to a Notion database a la Chief AI Officer database
