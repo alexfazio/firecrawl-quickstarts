@@ -21,6 +21,7 @@ aiohttp = "3.11.11"
 altair = "5.5.0"
 watchdog = "6.0.0"
 openai = "1.58.1"
+pytz = "2024.1"
 
 
 [build-system]
