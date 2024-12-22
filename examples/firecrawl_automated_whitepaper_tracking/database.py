@@ -189,3 +189,5 @@ if __name__ == "__main__":
     load_dotenv()
     logger.info("Starting database module directly")
     db = Database(os.getenv("POSTGRES_URL"))
+
+# TODO: stream the DB contents to a Notion database a la Chief AI Officer database

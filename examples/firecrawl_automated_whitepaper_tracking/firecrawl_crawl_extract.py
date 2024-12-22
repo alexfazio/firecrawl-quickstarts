@@ -229,3 +229,4 @@ if __name__ == "__main__":
 # TODO: create a streamlit ui to set environment variables and desired categories for the semantic filter
 # TODO: make the extract_paper_details function async so details are extracted in parallel
 # TODO: make all functions async to avoid redudant code
+s
