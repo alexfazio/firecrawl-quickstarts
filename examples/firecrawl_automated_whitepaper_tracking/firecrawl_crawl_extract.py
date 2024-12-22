@@ -16,6 +16,40 @@ from firecrawl import FirecrawlApp
 from dotenv import load_dotenv
 from database import Database
 from notifications import send_paper_notification, should_notify
+import logging
+from logging.handlers import RotatingFileHandler
+
+# Configure logging
+def setup_logging():
+    """Configure logging with both file and console handlers."""
+    logger = logging.getLogger('firecrawl_crawler')
+    logger.setLevel(logging.INFO)
+    
+    # Create formatters
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    
+    # Create and configure file handler (rotating log files, max 5MB each, keep 5 backup files)
+    file_handler = RotatingFileHandler(
+        'crawler.log', maxBytes=5*1024*1024, backupCount=5
+    )
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(formatter)
+    
+    # Create and configure console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(formatter)
+    
+    # Add handlers to logger
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+    
+    return logger
+
+# Initialize logger
+logger = setup_logging()
 
 # Load environment variables
 load_dotenv()
@@ -36,12 +70,14 @@ def extract_paper_urls(target_url: str) -> list:
     Returns:
         list: A list of extracted source URLs, excluding daily papers URLs
     """
+    logger.info(f"Starting URL extraction from: {target_url}")
     exclude_url_pattern = (
         r"^https://huggingface\.co/papers\?date="
         r"\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$"
     )
     def get_all_source_urls(json_data: Dict[str, Any]) -> list:
         extracted_urls = []
+        logger.debug(f"Processing JSON data with {len(json_data.get('data', []))} entries")
         if "data" in json_data:
             for entry in json_data["data"]:
                 if "metadata" in entry and "sourceURL" in entry["metadata"]:
@@ -49,6 +85,7 @@ def extract_paper_urls(target_url: str) -> list:
                     if not re.match(exclude_url_pattern, url):
                         extracted_urls.append(url)
         if "next" in json_data and json_data["next"]:
+            logger.debug(f"Found next page: {json_data['next']}")
             next_page_url = json_data["next"]
             response = requests.get(next_page_url)  # noqa
             if response.ok:
@@ -70,8 +107,11 @@ def extract_paper_urls(target_url: str) -> list:
             'includeTags': ['a']
         }
     }
+    logger.info(f"Crawling URL with params: {params}")
     crawl_result = app.crawl_url(target_url, params=params)
-    return get_all_source_urls(crawl_result)
+    urls = get_all_source_urls(crawl_result)
+    logger.info(f"Extracted {len(urls)} paper URLs")
+    return urls
 
 def extract_paper_details(url: str) -> dict:
     """Extract paper details from a given URL using FirecrawlApp.
@@ -82,6 +122,7 @@ def extract_paper_details(url: str) -> dict:
     Returns:
         dict: Extracted paper details including title, upvotes, comments, and URLs.
     """
+    logger.info(f"Extracting paper details from: {url}")
     # Initialize the FirecrawlApp with your API key
     app = FirecrawlApp(api_key=os.getenv("FIRECRAWL_API_KEY"))
 
@@ -110,7 +151,7 @@ def extract_paper_details(url: str) -> dict:
             'schema': ExtractSchema.model_json_schema(),
         }
     })
-    print(data['extract'])
+    logger.debug(f"Raw extraction data: {data['extract']}")
     return data['extract']
 
 def get_todays_papers_url() -> str:
@@ -125,21 +166,31 @@ def get_todays_papers_url() -> str:
     return f"https://huggingface.co/papers?date={today}"
 
 if __name__ == "__main__":
+    logger.info("Starting paper crawling process")
     today_papers_url = get_todays_papers_url()
+    logger.info(f"Today's papers URL: {today_papers_url}")
+    
     urls = extract_paper_urls(today_papers_url)
+    logger.info(f"Found {len(urls)} papers to process")
     
     db = Database(os.getenv("POSTGRES_URL"))
+    logger.info("Database connection established")
     
     try:
-        for url in urls:
-            details = extract_paper_details(url)
-            details["url"] = url
-            is_new_paper = db.add_paper(details)
-            
-            # Only notify if paper is new and meets criteria
-            if should_notify(details, is_new_paper):
-                asyncio.run(
-                    send_paper_notification(
+        for i, url in enumerate(urls, 1):
+            logger.info(f"Processing paper {i}/{len(urls)}: {url}")
+            try:
+                details = extract_paper_details(url)
+                details["url"] = url
+                is_new_paper = db.add_paper(details)
+                logger.info(
+                    f"Paper processed: '{details['paper_title']}' "
+                    f"({'new' if is_new_paper else 'existing'} paper)"
+                )
+                
+                if should_notify(details, is_new_paper):
+                    logger.info(f"Sending notification for paper: {details['paper_title']}")
+                    asyncio.run(send_paper_notification(
                         paper_title=details["paper_title"],
                         authors=details["authors"].split(", "),
                         abstract=details["abstract_body"],
@@ -149,10 +200,14 @@ if __name__ == "__main__":
                         pdf_url=details["view_pdf_url"],
                         arxiv_url=details["view_arxiv_page_url"],
                         github_url=details["github_repo_url"]
-                    )
-                )
-    except (requests.RequestException, ValueError, KeyError) as e:
-        print(f"Error processing URL {url}: {str(e)}")
+                    ))
+                    
+            except Exception as e:
+                logger.error(f"Error processing paper at {url}: {str(e)}", exc_info=True)
+                continue
+                
+    except Exception as e:
+        logger.error(f"Critical error in main process: {str(e)}", exc_info=True)
 
 # TODO: create a streamlit ui to set environment variables and desired categories for the semantic filter
 # TODO: make the extract_paper_details function async so details are extracted in parallel

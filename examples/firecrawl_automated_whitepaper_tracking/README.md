@@ -92,3 +92,5 @@ FIRECRAWL_API_KEY=fc-f6ff27d623e548f390bdc0b9debefe59
 POSTGRES_URL=postgresql://postgres:mypassword123@db.abcdefghijklm.supabase.co:5432/postgres?sslmode=require
 OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
+
+TODO: Create a `.env.example` file with placeholder values after testing is complete, to serve as a template for new users.

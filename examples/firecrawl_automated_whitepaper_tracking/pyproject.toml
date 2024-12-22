@@ -20,7 +20,7 @@ plotly = "5.24.1"
 aiohttp = "3.11.11"
 altair = "5.5.0"
 watchdog = "6.0.0"
-openai = "1.58.1"
+openai = ">=0.28.0"
 pytz = "2024.1"
 
 

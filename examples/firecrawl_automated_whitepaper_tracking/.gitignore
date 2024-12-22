@@ -9,3 +9,7 @@
 
 # GitHub Actions
 .github/workflows/.env
+
+# Temporary files
+*.log
+*.json
