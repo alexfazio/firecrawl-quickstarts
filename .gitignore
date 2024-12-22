@@ -79,3 +79,8 @@ fabric.properties
 # Files for environment variables, excluding examples
 *.env
 !.env.example
+
+# macOS system files
+.DS_Store
+.DS_Store?
+._*
