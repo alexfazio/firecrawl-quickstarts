@@ -1,4 +1,4 @@
-__doc__ = """Module for semantic filtering of research papers using OpenAI's API via OpenRouter."""
+__doc__ = """Module for semantic filtering of research papers using OpenAI's API."""
 
 import os
 import json
@@ -87,22 +87,23 @@ def belongs_to_category(paper_title: str, paper_abstract: str, desired_category:
                 {
                     "role": "system",
                     "content": (
-                        "You are a research paper classifier. You must respond by calling the function "
-                        "`classify_paper` with JSON that has two keys: belongs_to_category (bool) and "
-                        "confidence (float). Do not output anything except valid JSON for those arguments."
+                        f"You are a research paper classifier for the category '{desired_category}'. "
+                        "Evaluate if papers belong to this specific category. "
+                        "You must respond by calling the function `classify_paper` with JSON that has "
+                        "two keys: belongs_to_category (bool) and confidence (float). "
+                        "Do not output anything except valid JSON for those arguments."
                     )
                 },
                 {
                     "role": "user",
                     "content": (
-                        f"Does this paper belong to the category '{desired_category}'?\n\n"
                         f"Title: {paper_title}\n\n"
                         f"Abstract: {paper_abstract}"
                     )
                 }
             ],
             functions=functions,
-            function_call={"name": "classify_paper"}  # Force the function call
+            function_call={"name": "classify_paper"}
         )
     except Exception as e:
         logger.error("Error during ChatCompletion request: %s", e)
