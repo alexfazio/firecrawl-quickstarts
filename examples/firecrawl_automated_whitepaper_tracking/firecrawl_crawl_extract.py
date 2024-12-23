@@ -85,8 +85,12 @@ def extract_paper_urls(target_url: str) -> list:
     logger.info("Extracted %d paper URLs", len(urls))
     return urls
 
-def extract_paper_details(url: str) -> dict:
+async def extract_paper_details(url: str) -> dict:
     """Extract paper details from a given URL using FirecrawlApp.
+    
+    This async function handles the extraction of metadata from individual paper pages.
+    It uses the FirecrawlApp to scrape structured data according to the ExtractSchema.
+    The synchronous FirecrawlApp calls are run in a separate thread using asyncio.to_thread.
     
     Args:
         url (str): The URL of the paper to extract details from.
@@ -117,14 +121,57 @@ def extract_paper_details(url: str) -> dict:
         utc_submission_date_month: int
         utc_submission_date_year: int
         github_repo_url: str
-    data = app.scrape_url(url, {
-        'formats': ['extract'],
-        'extract': {
-            'schema': ExtractSchema.model_json_schema(),
+
+    # Run the synchronous scrape_url method in a separate thread
+    data = await asyncio.to_thread(
+        app.scrape_url,
+        url,
+        {
+            'formats': ['extract'],
+            'extract': {
+                'schema': ExtractSchema.model_json_schema(),
+            }
         }
-    })
+    )
     logger.debug("Raw extraction data: %s", data['extract'])
     return data['extract']
+
+async def process_paper_batch(urls: list[str], db: Database, batch_size: int = 5):
+    """Process papers in batches to avoid overwhelming resources"""
+    for i in range(0, len(urls), batch_size):
+        batch = urls[i:i + batch_size]
+        tasks = []
+        for url in batch:
+            tasks.append(extract_paper_details(url))
+        
+        # Process batch of papers
+        details_list = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        # Handle results synchronously
+        for url, details in zip(batch, details_list):
+            if isinstance(details, Exception):
+                logger.error(f"Error processing {url}: {details}")
+                continue
+                
+            try:
+                # Synchronous database operations
+                details["url"] = url
+                is_new_paper = db.add_paper(details)
+                
+                if should_notify(details, is_new_paper):
+                    await send_paper_notification(
+                        paper_title=details["paper_title"],
+                        authors=details["authors"].split(", "),
+                        abstract=details["abstract_body"],
+                        upvotes=details["number_of_upvotes"],
+                        comments=details["number_of_comments"],
+                        url=url,
+                        pdf_url=details["view_pdf_url"],
+                        arxiv_url=details["view_arxiv_page_url"],
+                        github_url=details["github_repo_url"]
+                    )
+            except Exception as e:
+                logger.error(f"Error processing details for {url}: {e}")
 
 def get_todays_papers_url() -> str:
     """
@@ -165,38 +212,7 @@ if __name__ == "__main__":
     logger.info("Database connection established")
     
     try:
-        for i, url in enumerate(urls, 1):
-            logger.info("Processing paper %d/%d: %s", i, len(urls), url)
-            try:
-                details = extract_paper_details(url)
-                details["url"] = url
-                is_new_paper = db.add_paper(details)
-                logger.info(
-                    "Paper processed: '%s' (%s paper)",
-                    details['paper_title'],
-                    'new' if is_new_paper else 'existing'
-                )
-                
-                if should_notify(details, is_new_paper):
-                    logger.info("Sending notification for paper: %s", details['paper_title'])
-                    asyncio.run(send_paper_notification(
-                        paper_title=details["paper_title"],
-                        authors=details["authors"].split(", "),
-                        abstract=details["abstract_body"],
-                        upvotes=details["number_of_upvotes"],
-                        comments=details["number_of_comments"],
-                        url=url,
-                        pdf_url=details["view_pdf_url"],
-                        arxiv_url=details["view_arxiv_page_url"],
-                        github_url=details["github_repo_url"]
-                    ))
-                else:
-                    logger.info("Skipping notification for paper: %s (does not match category criteria)", details['paper_title'])
-                    
-            except Exception as e:
-                logger.error("Error processing paper at %s: %s", url, str(e), exc_info=True)
-                continue
-                
+        asyncio.run(process_paper_batch(urls, db))
     except (SQLAlchemyError, requests.RequestException, ValueError) as e:
         logger.error("Critical error in main process: %s", str(e), exc_info=True)
 
@@ -205,3 +221,7 @@ if __name__ == "__main__":
 # TODO: make all functions async to avoid redudant code
 # TODO: for each url extracted by the crawler it should be verified if it exists already in 
 # the database before passing it to the extract_paper_details function
+# TODO: update the extract_paper_details function to process new papers only if the number of
+# found papers for the specific date is greater than the number of papers already found for that date
+# within the database. so this will need a new specific database table to store the number of papers
+# found for each date.

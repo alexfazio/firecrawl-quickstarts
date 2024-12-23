@@ -94,3 +94,5 @@ OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 TODO: Create a `.env.example` file with placeholder values after testing is complete, to serve as a template for new users.
+TODO: Add to readme how to use the main function firecrawl_crawl_extract.py with arguments to set
+the date for the papers to extract.
