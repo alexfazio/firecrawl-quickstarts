@@ -35,7 +35,8 @@ def should_notify(paper_details: dict, is_new_paper: bool) -> bool:
         SINGLE_CATEGORY_OF_INTEREST
     )
     
-    return belongs  # This will now correctly use the boolean value
+    # Only notify if both belongs is True AND confidence is high enough
+    return is_new_paper and belongs and confidence > 0.8
 
 async def send_paper_notification(
     paper_title: str,
@@ -96,4 +97,5 @@ if __name__ == "__main__":
         )
     )
 
-# TODO: implement discord button for feedback about relevancy of notifications
+# TODO: implement discord button for feedback about relevancy of notifications, 
+# this must be fed back into the database for subsequent refinement of prompts
