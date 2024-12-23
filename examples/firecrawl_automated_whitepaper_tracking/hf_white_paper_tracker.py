@@ -9,7 +9,6 @@ import sys
 import argparse
 import asyncio
 import requests
-from datetime import datetime
 from typing import Optional
 from sqlalchemy.exc import SQLAlchemyError
 
