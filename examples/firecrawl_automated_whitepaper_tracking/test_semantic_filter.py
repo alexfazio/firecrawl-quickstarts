@@ -1,3 +1,5 @@
+__doc__ = """Module for testing the semantic filter."""
+
 from semantic_filter import belongs_to_category
 from category_prompt import DESIRED_CATEGORY
 

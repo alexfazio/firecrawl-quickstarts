@@ -1,4 +1,4 @@
-"""
+__doc__ = """
 This file defines the DESIRED_CATEGORY as a single, long string
 that describes the category of interest.
 """

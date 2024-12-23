@@ -1,3 +1,5 @@
+__doc__ = """Module for interacting with the supabase database using SQLAlchemy."""
+
 from datetime import datetime
 from sqlalchemy import (
     create_engine, Column, String, Integer, DateTime, ForeignKey, Text, ARRAY
