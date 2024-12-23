@@ -2,11 +2,10 @@ __doc__ = """Module for semantic filtering of research papers using OpenAI's API
 
 import os
 import json
-import openai
-import logging
-from datetime import datetime
 from functools import wraps
 from json import JSONDecodeError
+
+import openai
 from pydantic import BaseModel, ValidationError
 from dotenv import load_dotenv
 from logging_config import setup_semantic_filter_logging
@@ -105,7 +104,7 @@ def belongs_to_category(paper_title: str, paper_abstract: str, desired_category:
             functions=functions,
             function_call={"name": "classify_paper"}
         )
-    except Exception as e:
+    except (openai.APIError, openai.RateLimitError, openai.APIConnectionError) as e:
         logger.error("Error during ChatCompletion request: %s", e)
         return False
 

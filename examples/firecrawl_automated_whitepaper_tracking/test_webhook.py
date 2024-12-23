@@ -6,6 +6,7 @@ import requests
 import json
 
 def test_discord_webhook():
+    """Test the Discord webhook configuration by sending a test message."""
     # Load environment variables
     load_dotenv()
     

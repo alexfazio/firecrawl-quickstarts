@@ -12,6 +12,7 @@ from typing import Dict, Any
 # Third-party imports
 import pytz
 import requests
+from sqlalchemy.exc import SQLAlchemyError
 from pydantic import BaseModel
 from firecrawl import FirecrawlApp
 from dotenv import load_dotenv
@@ -194,7 +195,7 @@ if __name__ == "__main__":
                 logger.error("Error processing paper at %s: %s", url, str(e), exc_info=True)
                 continue
                 
-    except Exception as e:
+    except (SQLAlchemyError, requests.RequestException, ValueError) as e:
         logger.error("Critical error in main process: %s", str(e), exc_info=True)
 
 # TODO: create a streamlit ui to set environment variables and desired categories for the semantic filter

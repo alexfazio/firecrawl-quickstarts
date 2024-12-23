@@ -4,6 +4,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
 from logging_config import setup_database_logging
+from sqlalchemy.exc import SQLAlchemyError
 
 # Configure logging using centralized configuration
 logger = setup_database_logging()
@@ -222,7 +223,7 @@ if __name__ == "__main__":
         
         logger.info("Test completed successfully! ✅")
         
-    except Exception as e:
+    except (SQLAlchemyError, ValueError) as e:
         logger.error("Test failed! ❌ Error: %s", str(e))
 
 # TODO: stream the DB contents to a Notion database a la Chief AI Officer database
