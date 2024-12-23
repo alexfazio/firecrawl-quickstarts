@@ -60,7 +60,7 @@ def belongs_to_category(paper_title: str, paper_abstract: str, desired_category:
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_instructions},
                 {"role": "user", "content": user_prompt},
