@@ -74,27 +74,4 @@ homes for papers on agentic LLM systems:
     • Machine Learning (cs.LG)
     • Human-Computer Interaction (cs.HC)
     • Software Engineering (cs.SE)
-
-**Rationale for These Improvements**
-1. **Enhanced Clarity on Benchmarking and Evaluation**
-   The updated directives explicitly include papers that benchmark or
-   evaluate AI agents, ensuring that studies like “TheAgentCompany” are
-   recognized as relevant even if they focus on assessing agent performance
-   rather than developing new agent architectures.
-2. **Broader Inclusion of Agentic Behaviors**
-   By emphasizing not only the implementation but also the evaluation and
-   interaction of AI agents with external systems, the directives now cover
-   a wider range of agent-focused research.
-3. **Explicit Mention of Evaluation Metrics**
-   Including criteria related to the effectiveness, reliability, and
-   scalability of AI agents helps capture papers that analyze how well
-   agents perform tasks autonomously.
-4. **Integration with External Systems**
-   Highlighting the interaction between AI agents and external systems
-   ensures that papers discussing agents’ ability to utilize tools and APIs
-   are appropriately classified.
-5. **Avoidance of Specific Examples**
-   The directives maintain generality by avoiding specific examples,
-   ensuring they are broadly applicable to various types of agent-related
-   research.
 """

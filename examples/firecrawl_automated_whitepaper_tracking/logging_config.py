@@ -13,17 +13,11 @@ def setup_base_logging(
     log_level: int = logging.INFO,
     format_string: str = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 ) -> logging.Logger:
-    """Configure base logging with both file and console handlers.
+    """Configure base logging with both file and console handlers."""
+    # Create logs directory relative to the examples directory
+    logs_dir = Path(__file__).parent.parent / 'logs'
+    logs_dir.mkdir(parents=True, exist_ok=True)
     
-    Args:
-        logger_name (str): Name of the logger to configure
-        log_file (str, optional): Path to log file. If None, only console logging is used
-        log_level (int, optional): Logging level. Defaults to INFO
-        format_string (str, optional): Format string for log messages
-        
-    Returns:
-        logging.Logger: Configured logger instance
-    """
     logger = logging.getLogger(logger_name)
     logger.setLevel(log_level)
     
@@ -42,8 +36,9 @@ def setup_base_logging(
     
     # Add file handler if log_file is specified
     if log_file:
+        log_path = logs_dir / log_file
         file_handler = RotatingFileHandler(
-            log_file,
+            log_path,
             maxBytes=5*1024*1024,  # 5MB
             backupCount=5
         )
@@ -60,40 +55,18 @@ def setup_crawler_logging() -> logging.Logger:
     Returns:
         logging.Logger: Configured logger instance
     """
-    # Create logs directory if it doesn't exist
-    logs_dir = Path("/Users/alex/Documents/GitHub/firecrawl-quickstarts/examples/logs")
-    logs_dir.mkdir(parents=True, exist_ok=True)
-
-    # Create a logger
-    logger = logging.getLogger("hf_paper_tracker")
-    logger.setLevel(logging.INFO)
-
-    # Create file handler with current timestamp
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_file = logs_dir / f"paper_tracker_{timestamp}.log"
-    file_handler = logging.FileHandler(log_file)
-    file_handler.setLevel(logging.INFO)
-
-    # Create console handler
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.INFO)
-
-    # Create formatter and add it to the handlers
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    file_handler.setFormatter(formatter)
-    console_handler.setFormatter(formatter)
-
-    # Add handlers to logger
-    logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
-
-    return logger
+    return setup_base_logging(
+        logger_name="hf_paper_tracker",
+        log_file=f"paper_tracker_{timestamp}.log"
+    )
 
 def setup_semantic_filter_logging() -> logging.Logger:
     """Configure logging specifically for the semantic filter module."""
+    timestamp = datetime.now().strftime("%Y%m%d")
     return setup_base_logging(
         logger_name='semantic_filter',
-        log_file=f'semantic_filter_{datetime.now().strftime("%Y%m%d")}.log',
+        log_file=f'semantic_filter_{timestamp}.log',
         format_string='%(asctime)s - %(levelname)s - %(funcName)s - %(message)s'
     )
 
