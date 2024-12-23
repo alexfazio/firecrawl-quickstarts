@@ -2612,3 +2612,4 @@ homes for papers on agentic LLM systems:
 '
 2024-12-23 17:26:52,676 - INFO - belongs_to_category - Classification result: belongs=False, confidence=0.0
 2024-12-23 17:26:52,677 - INFO - wrapper - Exiting belongs_to_category successfully
+2024-12-23 17:33:37,307 - INFO - <module> - Using OpenAI version: 1.58.1

@@ -56,7 +56,7 @@ class Database:
 
         logger.info("Creating database tables if they don't exist")
         Base.metadata.create_all(self.engine)
-        self.Session = sessionmaker(bind=self.engine)
+        self.session_factory = sessionmaker(bind=self.engine)
         logger.info("Database initialization complete")
 
         # Add version check after creating tables
@@ -64,7 +64,7 @@ class Database:
         
     def _check_schema_version(self):
         """Verify database schema version is compatible."""
-        session = self.Session()
+        session = self.session_factory()
         try:
             # Create version table if it doesn't exist
             session.execute(text("""
@@ -112,7 +112,7 @@ class Database:
     def get_all_papers(self):
         """Get all papers from the database"""
         logger.info("Fetching all papers from database")
-        session = self.Session()
+        session = self.session_factory()
         try:
             papers = session.query(Paper).all()
             logger.info("Retrieved %d papers from database", len(papers))
@@ -130,7 +130,7 @@ class Database:
             bool: True if this is a new paper, False if it's an update
         """
         logger.info("Adding/updating paper: %s", paper_data['url'])
-        session = self.Session()
+        session = self.session_factory()
         try:
             # Check if paper already exists
             existing_paper = session.query(Paper).filter(

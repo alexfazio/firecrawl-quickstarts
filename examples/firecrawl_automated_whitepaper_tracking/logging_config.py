@@ -4,7 +4,6 @@ import logging
 from logging.handlers import RotatingFileHandler
 from datetime import datetime
 from functools import wraps  # Needed for the decorator
-import os
 from pathlib import Path
 
 def setup_base_logging(
@@ -13,7 +12,17 @@ def setup_base_logging(
     log_level: int = logging.INFO,
     format_string: str = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 ) -> logging.Logger:
-    """Configure base logging with both file and console handlers."""
+    """Configure base logging with both file and console handlers.
+    
+    Args:
+        logger_name (str): Name of the logger to configure
+        log_file (str, optional): Path to log file. If None, only console logging is used
+        log_level (int, optional): Logging level. Defaults to INFO
+        format_string (str, optional): Format string for log messages
+        
+    Returns:
+        logging.Logger: Configured logger instance
+    """
     # Create logs directory relative to the examples directory
     logs_dir = Path(__file__).parent.parent / 'logs'
     logs_dir.mkdir(parents=True, exist_ok=True)
