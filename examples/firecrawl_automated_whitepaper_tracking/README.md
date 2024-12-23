@@ -1,15 +1,21 @@
-# Hugging Face Daily Paper Notification Agent
+# Hugging Face "Daily Papers" Tracker
 
-An alert system that tracks Hugging Face Daily Papers for new publications and informs users via Discord notification webhooks.
+An intelligent tracking system that monitors Hugging Face Daily Papers using Firecrawl for efficient web scraping and data extraction. The system employs semantic filtering (powered by GPT-4-mini) to identify and notify users about relevant publications via Discord. Papers are automatically crawled, processed, and filtered based on their content relevance. Currently configured to track AI Agent-related papers, but easily adaptable to other research interests.
 
 ## Features
 
-- Automatically notifies about Hugging Face Daily Papers releases.
-- Scans for new papers every 6 hours.
-- Currently supports [Hugging Face Papers](https://huggingface.co/papers) only.
-- Delivers paper notifications via Discord.
-- Stores historical white paper data in a PostgreSQL database.
-- Provides an interactive visualization of paper history with Streamlit.
+- Leverages Firecrawl for robust paper extraction and metadata collection
+- Automatically notifies about Hugging Face Daily Papers releases
+- Scans for new papers every 6 hours
+- Currently supports [Hugging Face Papers](https://huggingface.co/papers) only
+- Delivers paper notifications via Discord
+- Stores historical white paper data in a PostgreSQL database
+- Provides an interactive visualization of paper history with Streamlit
+- Implements semantic filtering to only notify about relevant papers:
+  - Uses GPT-4-mini to analyze paper content
+  - Filters papers based on customizable category definitions
+  - Currently focused on "AI Agents" papers (configurable in `category_prompt.py`)
+  - Notifications are only sent for papers with high relevance confidence (>80%)
 
 ## Setup
 
