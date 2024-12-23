@@ -1,7 +1,14 @@
 __doc__ = """Module for testing the semantic filter."""
 
-from semantic_filter import belongs_to_category
-from category_prompt import DESIRED_CATEGORY
+import os
+import sys
+
+# Add the project root to the Python path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
+sys.path.insert(0, project_root)
+
+from examples.firecrawl_automated_whitepaper_tracking.semantic_filter import belongs_to_category
+from examples.firecrawl_automated_whitepaper_tracking.category_prompt import DESIRED_CATEGORY
 
 def test_belongs_to_category():
     """

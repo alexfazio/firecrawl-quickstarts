@@ -4,21 +4,27 @@ Entry point module for the Hugging Face White Paper Tracker.
 Handles command line arguments and initiates the paper tracking process.
 """
 
+import os
+import sys
 import argparse
 import asyncio
-import os
-from typing import Optional
-
 import requests
+from datetime import datetime
+from typing import Optional
 from sqlalchemy.exc import SQLAlchemyError
 
-from supabase_db import Database
-from firecrawl_crawl_extract import (
+# Add project root to Python path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+sys.path.insert(0, project_root)
+
+# Now we can import our modules
+from examples.firecrawl_automated_whitepaper_tracking.firecrawl_crawl_extract import (
     extract_paper_urls,
     process_paper_batch,
     get_todays_papers_url
 )
-from logging_config import setup_crawler_logging
+from examples.firecrawl_automated_whitepaper_tracking.supabase_db import Database
+from examples.firecrawl_automated_whitepaper_tracking.logging_config import setup_crawler_logging
 
 # Initialize logger
 logger = setup_crawler_logging()

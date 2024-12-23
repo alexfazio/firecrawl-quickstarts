@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 # Import the single desired category string
 from category_prompt import DESIRED_CATEGORY
-from semantic_filter import belongs_to_category
+from examples.firecrawl_automated_whitepaper_tracking.semantic_filter import belongs_to_category
 
 load_dotenv()
 

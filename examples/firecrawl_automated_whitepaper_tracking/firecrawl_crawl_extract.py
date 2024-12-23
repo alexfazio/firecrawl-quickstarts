@@ -17,7 +17,7 @@ from pydantic import BaseModel
 from firecrawl import FirecrawlApp
 from dotenv import load_dotenv
 from supabase_db import Database
-from discord_notifications import send_paper_notification, should_notify
+from examples.firecrawl_automated_whitepaper_tracking.discord_notifications import send_paper_notification, should_notify
 from logging_config import setup_crawler_logging
 
 # Initialize logger
