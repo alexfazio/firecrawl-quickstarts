@@ -99,3 +99,6 @@ if __name__ == "__main__":
 
 # TODO: implement discord button for feedback about relevancy of notifications, 
 # this must be fed back into the database for subsequent refinement of prompts
+
+# TODO: implement admin-only error notifications in Discord - errors should only be 
+# visible to channel administrators to avoid cluttering the main feed

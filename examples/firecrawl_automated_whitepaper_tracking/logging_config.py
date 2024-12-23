@@ -4,6 +4,8 @@ import logging
 from logging.handlers import RotatingFileHandler
 from datetime import datetime
 from functools import wraps  # Needed for the decorator
+import os
+from pathlib import Path
 
 def setup_base_logging(
     logger_name: str,
@@ -51,12 +53,41 @@ def setup_base_logging(
     
     return logger
 
-def setup_crawler_logging(logger_name: str = 'firecrawl_crawler') -> logging.Logger:
-    """Configure logging specifically for the crawler module."""
-    return setup_base_logging(
-        logger_name=logger_name,
-        log_file='crawler.log'
-    )
+def setup_crawler_logging() -> logging.Logger:
+    """
+    Configure logging for the crawler with file output in the specified logs directory.
+    
+    Returns:
+        logging.Logger: Configured logger instance
+    """
+    # Create logs directory if it doesn't exist
+    logs_dir = Path("/Users/alex/Documents/GitHub/firecrawl-quickstarts/examples/logs")
+    logs_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create a logger
+    logger = logging.getLogger("hf_paper_tracker")
+    logger.setLevel(logging.INFO)
+
+    # Create file handler with current timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_file = logs_dir / f"paper_tracker_{timestamp}.log"
+    file_handler = logging.FileHandler(log_file)
+    file_handler.setLevel(logging.INFO)
+
+    # Create console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+
+    # Create formatter and add it to the handlers
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+    console_handler.setFormatter(formatter)
+
+    # Add handlers to logger
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+
+    return logger
 
 def setup_semantic_filter_logging() -> logging.Logger:
     """Configure logging specifically for the semantic filter module."""
