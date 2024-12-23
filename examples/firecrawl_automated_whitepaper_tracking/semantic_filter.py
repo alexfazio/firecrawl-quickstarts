@@ -115,3 +115,5 @@ if __name__ == "__main__":
 # notifications to Discord using discord_notifications.py's webhook. Research needed:
 # Discord webhook might not support role-based visibility (@admin mentions) directly - 
 # may need to create a separate admin-only channel or explore Discord bot implementation
+# TODO: swap out gpt-4o for gpt-4o-mini in the semantic filter to save on cost. 
+# ensure to get the correct model name from the API docs
