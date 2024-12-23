@@ -184,38 +184,6 @@ def get_todays_papers_url() -> str:
     today = datetime.now(sf_tz).strftime('%Y-%m-%d')
     return f"https://huggingface.co/papers?date={today}"
 
-if __name__ == "__main__":
-    import argparse
-    
-    # Set up argument parser
-    parser = argparse.ArgumentParser(description='Crawl and extract papers from HuggingFace.')
-    parser.add_argument('--url', type=str, help='Full URL to crawl (e.g., https://huggingface.co/papers?date=2024-12-19)')
-    parser.add_argument('--date', type=str, help='Date in YYYY-MM-DD format (e.g., 2024-12-19)')
-    
-    args = parser.parse_args()
-    
-    # Determine which URL to use
-    if args.url:
-        papers_url = args.url
-        logger.info("Using provided full URL: %s", papers_url)
-    elif args.date:
-        papers_url = f"https://huggingface.co/papers?date={args.date}"
-        logger.info("Using URL for specified date: %s", papers_url)
-    else:
-        papers_url = get_todays_papers_url()
-        logger.info("Using today's papers URL: %s", papers_url)
-    
-    urls = extract_paper_urls(papers_url)
-    logger.info("Found %d papers to process", len(urls))
-    
-    db = Database(os.getenv("POSTGRES_URL"))
-    logger.info("Database connection established")
-    
-    try:
-        asyncio.run(process_paper_batch(urls, db))
-    except (SQLAlchemyError, requests.RequestException, ValueError) as e:
-        logger.error("Critical error in main process: %s", str(e), exc_info=True)
-
 # TODO: create a streamlit ui to set environment variables and desired categories for the semantic filter
 # TODO: make the extract_paper_details function async so details are extracted in parallel
 # TODO: make all functions async to avoid redudant code

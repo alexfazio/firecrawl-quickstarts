@@ -46,7 +46,7 @@ jobs:
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}  # <-- Also port 6543 here
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          poetry run python firecrawl_crawl_extract.py
+          poetry run python hf_white_paper_tracker.py
 
       - name: Notify on Failure
         if: failure()

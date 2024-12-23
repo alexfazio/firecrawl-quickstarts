@@ -108,3 +108,6 @@ if __name__ == "__main__":
 #  the flexibility of model switching
 # TODO: add examples to system prompt of abstract that are known to be 
 # in the category (agents)
+# TODO: store paper category relevance evaluations and confidence scores in the database 
+# to develop more accurate relevance response evaluations in the future 
+# using the OpenAI Evals platform.
