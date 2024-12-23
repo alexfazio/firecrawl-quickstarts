@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 from sqlalchemy import (
     create_engine, Column, String, Integer, DateTime, ForeignKey, Text, ARRAY
