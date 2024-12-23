@@ -1,8 +1,8 @@
 __doc__ = """Module for interacting with the supabase database using SQLAlchemy."""
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import (
-    create_engine, Column, String, Integer, DateTime, Text, ARRAY, text
+    create_engine, Column, String, Integer, DateTime, Text, ARRAY, text, Boolean
 )
 from sqlalchemy.orm import sessionmaker, declarative_base
 from logging_config import setup_database_logging
@@ -30,13 +30,17 @@ class Paper(Base):
     upvotes = Column(Integer, default=0)
     comments = Column(Integer, default=0)
     last_updated = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+    notification_sent = Column(Boolean, default=False)
+    extraction_success = Column(Boolean, default=True)
+    extraction_error = Column(Text, nullable=True)
+    last_extraction_attempt = Column(DateTime, default=datetime.now)
 
 
 class Database:
     """Class for interacting with the database using SQLAlchemy."""
-    CURRENT_SCHEMA_VERSION = 1
+    CURRENT_SCHEMA_VERSION = 2
 
-    def __init__(self, connection_string):
+    def __init__(self, connection_string, skip_version_check=False):
         logger.info("Initializing Database connection")
         if not connection_string:
             logger.error("Database connection string is not set")
@@ -59,8 +63,9 @@ class Database:
         self.session_factory = sessionmaker(bind=self.engine)
         logger.info("Database initialization complete")
 
-        # Add version check after creating tables
-        self._check_schema_version()
+        # Only check version if not skipped
+        if not skip_version_check:
+            self._check_schema_version()
         
     def _check_schema_version(self):
         """Verify database schema version is compatible."""
@@ -187,6 +192,44 @@ class Database:
         except Exception as e:
             logger.error("Error adding/updating paper %s: %s", paper_data['url'], str(e))
             raise
+        finally:
+            session.close()
+
+    def update_notification_status(self, url: str, status: bool) -> bool:
+        """Update the notification status for a paper. Returns True if successful."""
+        logger.info("Updating notification status for %s to %s", url, status)
+        session = self.session_factory()
+        try:
+            paper = session.query(Paper).filter(Paper.url == url).first()
+            if not paper:
+                logger.error("Paper not found: %s", url)
+                return False
+            paper.notification_sent = status
+            session.commit()
+            logger.info("Successfully updated notification status")
+            return True
+        except SQLAlchemyError as e:
+            session.rollback()
+            logger.error("Error updating notification status: %s", str(e))
+            return False
+        finally:
+            session.close()
+
+    def get_failed_extractions(self, min_age_hours: int = 1):
+        """Get papers that failed extraction and haven't been retried recently."""
+        logger.info("Fetching failed extractions older than %d hours", min_age_hours)
+        session = self.session_factory()
+        try:
+            retry_cutoff = datetime.now() - timedelta(hours=min_age_hours)
+            papers = session.query(Paper).filter(
+                Paper.extraction_success == False,
+                Paper.last_extraction_attempt < retry_cutoff
+            ).all()
+            logger.info("Found %d failed extractions eligible for retry", len(papers))
+            return papers
+        except SQLAlchemyError as e:
+            logger.error("Error fetching failed extractions: %s", str(e))
+            return []
         finally:
             session.close()
 

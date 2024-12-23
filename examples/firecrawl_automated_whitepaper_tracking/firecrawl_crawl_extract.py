@@ -144,22 +144,36 @@ async def process_paper_batch(urls: list[str], db: Database, batch_size: int = 5
         for url in batch:
             tasks.append(extract_paper_details(url))
         
-        # Process batch of papers
         details_list = await asyncio.gather(*tasks, return_exceptions=True)
         
-        # Handle results synchronously
         for url, details in zip(batch, details_list):
+            current_time = datetime.now()
+            paper_data = {
+                "url": url,
+                "extraction_success": True,
+                "extraction_error": None,
+                "last_extraction_attempt": current_time,
+                "notification_sent": False
+            }
+            
             if isinstance(details, Exception):
                 logger.error(f"Error processing {url}: {details}")
+                paper_data.update({
+                    "extraction_success": False,
+                    "extraction_error": str(details)
+                })
+                try:
+                    db.add_paper(paper_data)
+                except SQLAlchemyError as e:
+                    logger.error(f"Database error storing failed paper {url}: {e}")
                 continue
-                
+            
             try:
-                # Synchronous database operations
-                details["url"] = url
-                is_new_paper = db.add_paper(details)
+                paper_data.update(details)
+                is_new_paper = db.add_paper(paper_data)
                 
                 if should_notify(details, is_new_paper):
-                    await send_paper_notification(
+                    notification_success = await send_paper_notification(
                         paper_title=details["paper_title"],
                         authors=details["authors"].split(", "),
                         abstract=details["abstract_body"],
@@ -170,8 +184,23 @@ async def process_paper_batch(urls: list[str], db: Database, batch_size: int = 5
                         arxiv_url=details["view_arxiv_page_url"],
                         github_url=details["github_repo_url"]
                     )
+                    
+                    if notification_success:
+                        try:
+                            db.update_notification_status(url, True)
+                        except SQLAlchemyError as e:
+                            logger.error(f"Failed to update notification status for {url}: {e}")
+                    
             except Exception as e:
                 logger.error(f"Error processing details for {url}: {e}")
+                paper_data.update({
+                    "extraction_success": False,
+                    "extraction_error": str(e)
+                })
+                try:
+                    db.add_paper(paper_data)
+                except SQLAlchemyError as db_error:
+                    logger.error(f"Database error storing error state for {url}: {db_error}")
 
 def get_todays_papers_url() -> str:
     """
