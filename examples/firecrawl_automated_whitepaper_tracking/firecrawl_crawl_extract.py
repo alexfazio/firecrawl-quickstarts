@@ -203,4 +203,5 @@ if __name__ == "__main__":
 # TODO: create a streamlit ui to set environment variables and desired categories for the semantic filter
 # TODO: make the extract_paper_details function async so details are extracted in parallel
 # TODO: make all functions async to avoid redudant code
-# TODO: for each url extracted by the crawler it should be verified if it exists already in the database before passing it to the extract_paper_details function
+# TODO: for each url extracted by the crawler it should be verified if it exists already in 
+# the database before passing it to the extract_paper_details function
