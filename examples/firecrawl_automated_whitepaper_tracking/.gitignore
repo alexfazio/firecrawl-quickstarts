@@ -21,3 +21,6 @@ __pycache__/
 # Temporary files
 *.log
 *.json
+
+# Add this near the top, before the *.pyc line
+!__init__.py

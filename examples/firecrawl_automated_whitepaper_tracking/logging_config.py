@@ -3,6 +3,7 @@
 import logging
 from logging.handlers import RotatingFileHandler
 from datetime import datetime
+from functools import wraps  # Needed for the decorator
 
 def setup_base_logging(
     logger_name: str,
@@ -71,3 +72,18 @@ def setup_database_logging() -> logging.Logger:
         logger_name='database',
         log_file='database.log'
     )
+
+def log_function_call(func):
+    """Decorator to log entry and exit of functions."""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        logger = logging.getLogger('semantic_filter')  # or whichever logger name you prefer
+        logger.info("Entering %s", func.__name__)
+        try:
+            result = func(*args, **kwargs)
+            logger.info("Exiting %s successfully", func.__name__)
+            return result
+        except Exception as e:
+            logger.error("Error in %s: %s", func.__name__, str(e))
+            raise
+    return wrapper

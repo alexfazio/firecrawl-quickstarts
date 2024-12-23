@@ -190,6 +190,8 @@ if __name__ == "__main__":
                         arxiv_url=details["view_arxiv_page_url"],
                         github_url=details["github_repo_url"]
                     ))
+                else:
+                    logger.info("Skipping notification for paper: %s (does not match category criteria)", details['paper_title'])
                     
             except Exception as e:
                 logger.error("Error processing paper at %s: %s", url, str(e), exc_info=True)
@@ -201,3 +203,4 @@ if __name__ == "__main__":
 # TODO: create a streamlit ui to set environment variables and desired categories for the semantic filter
 # TODO: make the extract_paper_details function async so details are extracted in parallel
 # TODO: make all functions async to avoid redudant code
+# TODO: for each url extracted by the crawler it should be verified if it exists already in the database before passing it to the extract_paper_details function

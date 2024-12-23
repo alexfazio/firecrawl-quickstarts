@@ -9,7 +9,6 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "3.10.15"
-streamlit = "1.41.1"
 firecrawl-py = "1.6.8"
 pydantic = "2.10.4"
 psycopg2-binary = "2.9.10"
@@ -19,10 +18,8 @@ pandas = "2.2.3"
 plotly = "5.24.1"
 aiohttp = "3.11.11"
 altair = "5.5.0"
-watchdog = "6.0.0"
 openai = ">=0.28.0"
 pytz = "2024.1"
-
 
 [build-system]
 requires = ["poetry-core"]

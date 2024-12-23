@@ -2,42 +2,25 @@ __doc__ = """Module for semantic filtering of research papers using OpenAI's API
 
 import os
 import json
-from functools import wraps
-from json import JSONDecodeError
 
-import openai
+from json import JSONDecodeError
 from pydantic import BaseModel, ValidationError
 from dotenv import load_dotenv
-from logging_config import setup_semantic_filter_logging
+
+import openai
+from logging_config import setup_semantic_filter_logging, log_function_call
 
 # Load environment variables
 load_dotenv()
 
-# Configure OpenAI API key directly
+# Configure OpenAI API key
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # Configure logging using centralized configuration
 logger = setup_semantic_filter_logging()
-
-# Log OpenAI version after logger is configured
 logger.info("Using OpenAI version: %s", openai.__version__)
 
-# Update the client initialization
 client = openai.OpenAI()
-
-def log_function_call(func):
-    """Decorator to log entry and exit of functions."""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        logger.info("Entering %s", func.__name__)
-        try:
-            result = func(*args, **kwargs)
-            logger.info("Exiting %s successfully", func.__name__)
-            return result
-        except Exception as e:
-            logger.error("Error in %s: %s", func.__name__, str(e))
-            raise
-    return wrapper
 
 class CategoryMatch(BaseModel):
     """
@@ -49,87 +32,65 @@ class CategoryMatch(BaseModel):
     confidence: float
 
 @log_function_call
-def belongs_to_category(paper_title: str, paper_abstract: str, desired_category: str) -> bool:
+def belongs_to_category(paper_title: str, paper_abstract: str, desired_category: str) -> tuple[bool, float]:
     """
     Determine if a paper belongs to a specific category using
-    an OpenAI model that supports structured outputs.
+    an OpenAI model that supports structured JSON outputs.
+    
+    Returns:
+        tuple: (belongs_to_category: bool, confidence: float)
     """
     logger.info("Analyzing paper: '%s' for category '%s'", paper_title, desired_category)
-    
-    # Define the function schema following the function-calling format
-    functions = [
-        {
-            "name": "classify_paper",
-            "description": "Classify if a given paper belongs to a specified category.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "belongs_to_category": {
-                        "type": "boolean",
-                        "description": "True if the paper belongs to the category; otherwise false."
-                    },
-                    "confidence": {
-                        "type": "number",
-                        "description": "Confidence level between 0 and 1."
-                    }
-                },
-                "required": ["belongs_to_category", "confidence"]
-            }
-        }
-    ]
 
-    # Updated API call format for OpenAI SDK v1.0.0+
+    system_instructions = (
+        "You are a research paper classifier. "
+        "Given: a desired_category, a paper_title, and a paper_abstract, "
+        "determine if the paper belongs to the desired_category. "
+        "Output only valid JSON with the exact format: "
+        "{ \"belongs_to_category\": boolean, \"confidence\": float }. "
+        "Where 'belongs_to_category' is True if the paper belongs to the specified desired_category, "
+        "otherwise False, and 'confidence' is a float between 0 and 1. No additional keys or text."
+    )
+
+    user_prompt = (
+        f"desired_category: {desired_category}\n"
+        f"paper_title: {paper_title}\n"
+        f"paper_abstract: {paper_abstract}"
+    )
+
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-2024-08-06",
+            model="gpt-4",
             messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        f"You are a research paper classifier for the category '{desired_category}'. "
-                        "Evaluate if papers belong to this specific category. "
-                        "You must respond by calling the function `classify_paper` with JSON that has "
-                        "two keys: belongs_to_category (bool) and confidence (float). "
-                        "Do not output anything except valid JSON for those arguments."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": (
-                        f"Title: {paper_title}\n\n"
-                        f"Abstract: {paper_abstract}"
-                    )
-                }
+                {"role": "system", "content": system_instructions},
+                {"role": "user", "content": user_prompt},
             ],
-            functions=functions,
-            function_call={"name": "classify_paper"}
+            temperature=0.7
         )
-    except (openai.APIError, openai.RateLimitError, openai.APIConnectionError) as e:
-        logger.error("Error during ChatCompletion request: %s", e)
-        return False
-
-    # Update the response parsing
-    try:
-        message = response.choices[0].message
-        if message.function_call:  # Updated attribute access
-            function_call = message.function_call
-            arguments_json = function_call.arguments
-            parsed_args = json.loads(arguments_json)
+        # Add detailed response logging
+        logger.debug("Full API response: %s", response)
+        
+        message_content = response.choices[0].message.content.strip()
+        logger.debug("Raw message content: %s", message_content)
+        
+        if not message_content:
+            logger.error("Empty response from model")
+            return False, 0.0
             
-            classification = CategoryMatch(**parsed_args)
-            logger.info(
-                "Classification result: belongs=%s, confidence=%s",
-                classification.belongs_to_category,
-                classification.confidence
-            )
-            return classification.belongs_to_category and classification.confidence > 0.8
+        parsed_args = json.loads(message_content)
 
-        logger.warning("No function_call found in the response.")
-        return False
+        classification = CategoryMatch(**parsed_args)
+        logger.info(
+            "Classification result: belongs=%s, confidence=%s",
+            classification.belongs_to_category,
+            classification.confidence
+        )
+        belongs = classification.belongs_to_category and classification.confidence > 0.8
+        return belongs, classification.confidence
 
     except (JSONDecodeError, ValidationError) as e:
         logger.error("Error parsing or validating classification result: %s", e)
-        return False
+        return False, 0.0
 
 if __name__ == "__main__":
     logger.info("Starting semantic filter test")

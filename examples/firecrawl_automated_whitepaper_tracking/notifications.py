@@ -4,18 +4,15 @@ import os
 import asyncio
 import aiohttp
 from dotenv import load_dotenv
+
+# Import the single desired category string
+from category_prompt import DESIRED_CATEGORY
 from semantic_filter import belongs_to_category
 
 load_dotenv()
 
-# Categories of interest for notifications
-CATEGORIES_OF_INTEREST = [
-    "LLM Agents",
-    "Agentic AI",
-    "Agentic Workflows",
-    "AI Agents",
-    # Add more categories as needed
-]
+# Use the imported DESIRED_CATEGORY as a single variable (no list needed)
+SINGLE_CATEGORY_OF_INTEREST = DESIRED_CATEGORY
 
 def should_notify(paper_details: dict, is_new_paper: bool) -> bool:
     """
@@ -28,20 +25,17 @@ def should_notify(paper_details: dict, is_new_paper: bool) -> bool:
     Returns:
         bool: True if notification should be sent, False otherwise
     """
-    # First check if this is a new paper
     if not is_new_paper:
         return False
-        
-    # Then check if it belongs to any category of interest
-    for category in CATEGORIES_OF_INTEREST:
-        if belongs_to_category(
-            paper_details["paper_title"],
-            paper_details["abstract_body"],
-            category
-        ):
-            return True
+
+    # Unpack the tuple returned by belongs_to_category
+    belongs, confidence = belongs_to_category(
+        paper_details["paper_title"],
+        paper_details["abstract_body"],
+        SINGLE_CATEGORY_OF_INTEREST
+    )
     
-    return False
+    return belongs  # This will now correctly use the boolean value
 
 async def send_paper_notification(
     paper_title: str,
@@ -86,7 +80,6 @@ async def send_paper_notification(
     except (aiohttp.ClientError, ValueError) as e:
         print(f"Error sending Discord notification: {e}")
 
-
 if __name__ == "__main__":
     # Test notification
     asyncio.run(
@@ -97,7 +90,7 @@ if __name__ == "__main__":
             upvotes=10,
             comments=5,
             url="https://huggingface.co/papers/test",
-            pdf_url="https://example.com/pdf",
+            pdf_url="https://example.com/test.pdf",
             arxiv_url="https://arxiv.org/abs/test",
             github_url="https://github.com/test/repo"
         )
