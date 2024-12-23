@@ -16,8 +16,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from pydantic import BaseModel
 from firecrawl import FirecrawlApp
 from dotenv import load_dotenv
-from database import Database
-from notifications import send_paper_notification, should_notify
+from supabase_db import Database
+from discord_notifications import send_paper_notification, should_notify
 from logging_config import setup_crawler_logging
 
 # Initialize logger
@@ -193,3 +193,8 @@ def get_todays_papers_url() -> str:
 # found papers for the specific date is greater than the number of papers already found for that date
 # within the database. so this will need a new specific database table to store the number of papers
 # found for each date.
+# TODO: implement an improve error handling system for the extract_paper_details function which will
+# add papers that failed to be processed to the database but include a column to indicate that the
+# paper was not processed successfully, so that a retry can be performed when cron jobs are re-run.
+# this will require changing the database structure and schema, as well as some of the existing logic
+# that verifies if a paper should be processed or not.

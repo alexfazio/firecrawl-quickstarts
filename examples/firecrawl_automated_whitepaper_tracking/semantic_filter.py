@@ -111,3 +111,7 @@ if __name__ == "__main__":
 # TODO: store paper category relevance evaluations and confidence scores in the database 
 # to develop more accurate relevance response evaluations in the future 
 # using the OpenAI Evals platform.
+# TODO: implement error handling for OpenAI API credit exhaustion and send admin-only
+# notifications to Discord using discord_notifications.py's webhook. Research needed:
+# Discord webhook might not support role-based visibility (@admin mentions) directly - 
+# may need to create a separate admin-only channel or explore Discord bot implementation

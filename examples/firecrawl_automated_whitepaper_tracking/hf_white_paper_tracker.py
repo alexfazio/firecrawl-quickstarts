@@ -12,7 +12,7 @@ from typing import Optional
 import requests
 from sqlalchemy.exc import SQLAlchemyError
 
-from database import Database
+from supabase_db import Database
 from firecrawl_crawl_extract import (
     extract_paper_urls,
     process_paper_batch,
@@ -64,3 +64,6 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     run_paper_tracker(url=args.url, date=args.date)
+
+# TODO: Include a Bluesky API call to publish the paper's posts to Bluesky. This will require a new
+# llm flow to generate the post content and a new function to send the post to Bluesky.
