@@ -27,3 +27,11 @@ __pycache__/
 
 # Database migrations
 migrate_to_v1.py
+
+# Logs directory
+logs/
+*.log
+examples/logs/
+examples/logs/**
+**/logs/
+**/logs/**
