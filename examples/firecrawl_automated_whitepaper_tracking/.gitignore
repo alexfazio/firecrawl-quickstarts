@@ -24,3 +24,6 @@ __pycache__/
 
 # Add this near the top, before the *.pyc line
 !__init__.py
+
+# Database migrations
+migrate_to_v1.py

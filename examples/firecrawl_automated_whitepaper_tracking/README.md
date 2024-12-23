@@ -96,3 +96,45 @@ OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 TODO: Create a `.env.example` file with placeholder values after testing is complete, to serve as a template for new users.
 TODO: Add to readme how to use the main function firecrawl_crawl_extract.py with arguments to set
 the date for the papers to extract.
+
+## Database Schema
+
+The application uses a PostgreSQL database with the following schema:
+
+### Papers Table
+
+| Column           | Type      | Description                                    |
+|-----------------|-----------|------------------------------------------------|
+| url             | String    | Primary key - unique paper URL                 |
+| title           | String    | Paper title                                    |
+| authors         | String[]  | Array of author names                          |
+| abstract        | Text      | Paper abstract                                 |
+| pdf_url         | String    | URL to PDF version                            |
+| arxiv_url       | String    | URL to arXiv page                             |
+| github_url      | String    | URL to GitHub repository                       |
+| publication_date| DateTime  | Original publication date                      |
+| submission_date | DateTime  | Date added to HuggingFace                     |
+| upvotes         | Integer   | Current number of upvotes                      |
+| comments        | Integer   | Current number of comments                     |
+| last_updated    | DateTime  | Last time the record was updated              |
+
+### Schema Version Table
+
+| Column     | Type      | Description                          |
+|-----------|-----------|--------------------------------------|
+| version   | Integer   | Schema version number                 |
+| applied_at| Timestamp | When this version was applied        |
+
+## Database Migrations
+
+To update the database schema:
+
+1. Set your database URL in `.env`:
+   ```
+   POSTGRES_URL=postgresql://...
+   ```
+
+2. Run the migration script:
+   ```bash
+   poetry run python migrations/migrate_to_v1.py
+   ```
