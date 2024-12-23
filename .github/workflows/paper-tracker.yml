@@ -56,5 +56,3 @@ jobs:
           curl -H "Content-Type: application/json" -X POST \
                -d '{"content":"⚠️ Paper Tracker workflow failed! Please check the GitHub Actions logs."}' \
                $DISCORD_WEBHOOK_URL
-
-# TODO: Revert the schedule back to every 6 hours after testing is completed
