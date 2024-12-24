@@ -100,3 +100,7 @@ def log_function_call(func):
             logger.error("Error in %s: %s", func.__name__, str(e))
             raise
     return wrapper
+
+# TODO: change logging style to display logging level before module name
+# e.g. 2024-12-24 12:05:18,885 - INFO - hf_paper_tracker - Extracting paper details from
+# instead of 2024-12-24 12:05:18,885 - hf_paper_tracker - INFO - Extracting paper details from
