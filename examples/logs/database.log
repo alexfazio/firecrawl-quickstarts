@@ -395,3 +395,253 @@
 2024-12-23 18:00:07,343 - database - WARNING - Invalid publication date in https://huggingface.co/papers/2412.08614: year 0 is out of range
 2024-12-23 18:00:07,343 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2412.08614: year 0 is out of range
 2024-12-23 18:00:07,544 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2412.08614
+2024-12-24 11:36:01,823 - database - INFO - Initializing Database connection
+2024-12-24 11:36:01,881 - database - INFO - Creating database tables if they don't exist
+2024-12-24 11:36:03,978 - database - INFO - Database initialization complete
+2024-12-24 11:36:04,383 - database - ERROR - Database schema version 3 is newer than supported version 2. Please update the application.
+2024-12-24 11:36:04,384 - database - ERROR - Error checking schema version: Database schema version not supported
+2024-12-24 11:41:27,089 - database - INFO - Initializing Database connection
+2024-12-24 11:41:27,147 - database - INFO - Creating database tables if they don't exist
+2024-12-24 11:41:29,320 - database - INFO - Database initialization complete
+2024-12-24 11:41:29,745 - database - ERROR - Database schema version 3 is newer than supported version 2. Please update the application.
+2024-12-24 11:41:29,745 - database - ERROR - Error checking schema version: Database schema version not supported
+2024-12-24 11:44:33,711 - database - INFO - Initializing Database connection
+2024-12-24 11:44:33,764 - database - INFO - Creating database tables if they don't exist
+2024-12-24 11:44:35,768 - database - INFO - Database initialization complete
+2024-12-24 11:44:36,167 - database - ERROR - Database schema version 3 is newer than supported version 2. Please update the application.
+2024-12-24 11:44:36,167 - database - ERROR - Error checking schema version: Database schema version not supported
+2024-12-24 11:45:50,825 - database - INFO - Initializing database connection...
+2024-12-24 11:45:50,825 - database - INFO - Initializing Database connection
+2024-12-24 11:45:50,857 - database - INFO - Creating database tables if they don't exist
+2024-12-24 11:45:52,951 - database - INFO - Database initialization complete
+2024-12-24 11:45:52,951 - database - INFO - Starting reversion to schema version 2...
+2024-12-24 11:45:53,257 - database - INFO - Making publication_date non-nullable...
+2024-12-24 11:45:53,365 - database - INFO - Making submission_date non-nullable...
+2024-12-24 11:45:53,467 - database - INFO - Removing version 3 from schema_version...
+2024-12-24 11:45:53,685 - database - INFO - Successfully reverted database to version 2
+2024-12-24 11:45:53,686 - database - INFO - Reversion completed successfully! ✅
+2024-12-24 11:48:27,171 - database - INFO - Initializing Database connection
+2024-12-24 11:48:27,213 - database - INFO - Creating database tables if they don't exist
+2024-12-24 11:48:29,159 - database - INFO - Database initialization complete
+2024-12-24 11:48:29,559 - database - INFO - Database schema version: 2
+2024-12-24 11:48:36,548 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.14904
+2024-12-24 11:48:36,851 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.14904
+2024-12-24 11:48:36,949 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.14904
+2024-12-24 11:48:36,950 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.15509
+2024-12-24 11:48:37,251 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.15509
+2024-12-24 11:48:37,350 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.15509
+2024-12-24 11:48:37,350 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.15491
+2024-12-24 11:48:37,652 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.15491
+2024-12-24 11:48:37,757 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.15491
+2024-12-24 11:48:37,759 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.15000
+2024-12-24 11:48:38,070 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.15000
+2024-12-24 11:48:38,174 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.15000
+2024-12-24 11:48:38,177 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.15391
+2024-12-24 11:48:38,478 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.15391
+2024-12-24 11:48:38,590 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.15391
+2024-12-24 11:48:50,482 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.15506
+2024-12-24 11:48:50,807 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.15506
+2024-12-24 11:48:50,908 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.15506
+2024-12-24 11:48:50,908 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.15319
+2024-12-24 11:48:51,210 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.15319
+2024-12-24 11:48:51,320 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.15319
+2024-12-24 11:48:51,321 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.14905
+2024-12-24 11:48:51,627 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.14905
+2024-12-24 11:48:51,723 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.14905
+2024-12-24 11:48:51,724 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.14848
+2024-12-24 11:48:52,023 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.14848
+2024-12-24 11:48:52,121 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.14848
+2024-12-24 11:48:52,122 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.15220
+2024-12-24 11:48:52,460 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.15220
+2024-12-24 11:48:52,557 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.15220
+2024-12-24 11:49:02,217 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.05018
+2024-12-24 11:49:02,516 - database - INFO - Updating existing paper: https://huggingface.co/papers/2401.05018
+2024-12-24 11:49:02,516 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.05018: year 0 is out of range
+2024-12-24 11:49:02,714 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2401.05018
+2024-12-24 11:49:02,715 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.06829
+2024-12-24 11:49:03,014 - database - INFO - Updating existing paper: https://huggingface.co/papers/2401.06829
+2024-12-24 11:49:03,014 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.06829: year 0 is out of range
+2024-12-24 11:49:03,216 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2401.06829
+2024-12-24 11:49:03,217 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.08559
+2024-12-24 11:49:03,511 - database - INFO - Updating existing paper: https://huggingface.co/papers/2401.08559
+2024-12-24 11:49:03,512 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.08559: year 0 is out of range
+2024-12-24 11:49:03,709 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2401.08559
+2024-12-24 11:49:03,710 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.11452
+2024-12-24 11:49:04,006 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.11452
+2024-12-24 11:49:04,006 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2402.11452: year 0 is out of range
+2024-12-24 11:49:04,207 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.11452
+2024-12-24 11:49:04,207 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.14407
+2024-12-24 11:49:04,504 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.14407
+2024-12-24 11:49:04,504 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2402.14407: year 0 is out of range
+2024-12-24 11:49:04,710 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.14407
+2024-12-24 11:49:11,603 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.10892
+2024-12-24 11:49:11,919 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.10892
+2024-12-24 11:49:11,920 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2402.10892: year 0 is out of range
+2024-12-24 11:49:12,125 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.10892
+2024-12-24 11:49:12,127 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.11115
+2024-12-24 11:49:12,432 - database - INFO - Updating existing paper: https://huggingface.co/papers/2401.11115
+2024-12-24 11:49:12,434 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.11115: year 0 is out of range
+2024-12-24 11:49:12,644 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2401.11115
+2024-12-24 11:49:12,644 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.11864
+2024-12-24 11:49:12,938 - database - INFO - Updating existing paper: https://huggingface.co/papers/2401.11864
+2024-12-24 11:49:12,939 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.11864: year 0 is out of range
+2024-12-24 11:49:13,167 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2401.11864
+2024-12-24 11:49:13,169 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.09615
+2024-12-24 11:49:13,464 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.09615
+2024-12-24 11:49:13,465 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2402.09615: year 0 is out of range
+2024-12-24 11:49:13,669 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.09615
+2024-12-24 11:49:13,671 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.05190
+2024-12-24 11:49:13,976 - database - INFO - Updating existing paper: https://huggingface.co/papers/2401.05190
+2024-12-24 11:49:13,977 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.05190: year 0 is out of range
+2024-12-24 11:49:14,189 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2401.05190
+2024-12-24 11:49:21,315 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.02142
+2024-12-24 11:49:21,617 - database - INFO - Updating existing paper: https://huggingface.co/papers/2401.02142
+2024-12-24 11:49:21,618 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.02142: year 0 is out of range
+2024-12-24 11:49:21,816 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2401.02142
+2024-12-24 11:49:21,817 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.00741
+2024-12-24 11:49:22,130 - database - INFO - Updating existing paper: https://huggingface.co/papers/2401.00741
+2024-12-24 11:49:22,243 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2401.00741
+2024-12-24 11:49:22,248 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.08570
+2024-12-24 11:49:22,550 - database - INFO - Updating existing paper: https://huggingface.co/papers/2401.08570
+2024-12-24 11:49:22,550 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.08570: year 0 is out of range
+2024-12-24 11:49:22,748 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2401.08570
+2024-12-24 11:49:22,749 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.04616
+2024-12-24 11:49:23,051 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.04616
+2024-12-24 11:49:23,053 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2402.04616: year 0 is out of range
+2024-12-24 11:49:23,251 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.04616
+2024-12-24 11:49:23,251 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.05359
+2024-12-24 11:49:23,546 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.05359
+2024-12-24 11:49:23,547 - database - WARNING - Invalid publication date in https://huggingface.co/papers/2402.05359: year 0 is out of range
+2024-12-24 11:49:23,547 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2402.05359: year 0 is out of range
+2024-12-24 11:49:23,767 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.05359
+2024-12-24 11:49:28,940 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.13927
+2024-12-24 11:49:29,257 - database - INFO - Updating existing paper: https://huggingface.co/papers/2401.13927
+2024-12-24 11:49:29,258 - database - WARNING - Invalid publication date in https://huggingface.co/papers/2401.13927: year 0 is out of range
+2024-12-24 11:49:29,258 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.13927: year 0 is out of range
+2024-12-24 11:49:29,459 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2401.13927
+2024-12-24 11:49:29,460 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.12688
+2024-12-24 11:49:29,764 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.12688
+2024-12-24 11:49:29,765 - database - WARNING - Invalid publication date in https://huggingface.co/papers/2402.12688: year 0 is out of range
+2024-12-24 11:49:29,765 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2402.12688: year 0 is out of range
+2024-12-24 11:49:29,985 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.12688
+2024-12-24 11:49:29,987 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.01881
+2024-12-24 11:49:30,310 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.01881
+2024-12-24 11:49:30,314 - database - WARNING - Invalid publication date in https://huggingface.co/papers/2402.01881: year 0 is out of range
+2024-12-24 11:49:30,314 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2402.01881: year 0 is out of range
+2024-12-24 11:49:30,512 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.01881
+2024-12-24 11:49:30,516 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.11399
+2024-12-24 11:49:30,834 - database - INFO - Updating existing paper: https://huggingface.co/papers/2402.11399
+2024-12-24 11:49:30,835 - database - WARNING - Invalid publication date in https://huggingface.co/papers/2402.11399: year 0 is out of range
+2024-12-24 11:49:30,836 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2402.11399: year 0 is out of range
+2024-12-24 11:49:31,040 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2402.11399
+2024-12-24 11:53:25,823 - database - INFO - Initializing Database connection
+2024-12-24 11:53:25,897 - database - INFO - Creating database tables if they don't exist
+2024-12-24 11:53:28,006 - database - INFO - Database initialization complete
+2024-12-24 11:53:28,412 - database - INFO - Database schema version: 2
+2024-12-24 11:53:35,428 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.01521
+2024-12-24 11:53:35,761 - database - INFO - Adding new paper: https://huggingface.co/papers/2402.01521
+2024-12-24 11:53:36,141 - database - INFO - Successfully added paper for https://huggingface.co/papers/2402.01521
+2024-12-24 11:53:40,397 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.00892
+2024-12-24 11:53:40,742 - database - INFO - Adding new paper: https://huggingface.co/papers/2402.00892
+2024-12-24 11:53:41,091 - database - INFO - Successfully added paper for https://huggingface.co/papers/2402.00892
+2024-12-24 11:53:41,812 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.01032
+2024-12-24 11:53:42,167 - database - INFO - Adding new paper: https://huggingface.co/papers/2402.01032
+2024-12-24 11:53:42,525 - database - INFO - Successfully added paper for https://huggingface.co/papers/2402.01032
+2024-12-24 11:53:43,981 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.01566
+2024-12-24 11:53:44,674 - database - INFO - Adding new paper: https://huggingface.co/papers/2402.01566
+2024-12-24 11:53:45,045 - database - INFO - Successfully added paper for https://huggingface.co/papers/2402.01566
+2024-12-24 11:53:45,843 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.01118
+2024-12-24 11:53:46,209 - database - INFO - Adding new paper: https://huggingface.co/papers/2402.01118
+2024-12-24 11:53:46,621 - database - INFO - Successfully added paper for https://huggingface.co/papers/2402.01118
+2024-12-24 11:54:06,727 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.01613
+2024-12-24 11:54:07,152 - database - INFO - Adding new paper: https://huggingface.co/papers/2402.01613
+2024-12-24 11:54:07,577 - database - INFO - Successfully added paper for https://huggingface.co/papers/2402.01613
+2024-12-24 11:54:08,679 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.01093
+2024-12-24 11:54:09,106 - database - INFO - Adding new paper: https://huggingface.co/papers/2402.01093
+2024-12-24 11:54:09,541 - database - INFO - Successfully added paper for https://huggingface.co/papers/2402.01093
+2024-12-24 11:54:10,408 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.01391
+2024-12-24 11:54:10,807 - database - INFO - Adding new paper: https://huggingface.co/papers/2402.01391
+2024-12-24 11:54:11,175 - database - INFO - Successfully added paper for https://huggingface.co/papers/2402.01391
+2024-12-24 11:54:12,008 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.01827
+2024-12-24 11:54:12,313 - database - INFO - Adding new paper: https://huggingface.co/papers/2401.01827
+2024-12-24 11:54:12,634 - database - INFO - Successfully added paper for https://huggingface.co/papers/2401.01827
+2024-12-24 11:54:13,443 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2312.17681
+2024-12-24 11:54:13,753 - database - INFO - Adding new paper: https://huggingface.co/papers/2312.17681
+2024-12-24 11:54:14,085 - database - INFO - Successfully added paper for https://huggingface.co/papers/2312.17681
+2024-12-24 11:54:21,096 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.11864
+2024-12-24 11:54:21,539 - database - INFO - Updating existing paper: https://huggingface.co/papers/2401.11864
+2024-12-24 11:54:21,540 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.11864: year 0 is out of range
+2024-12-24 11:54:22,160 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2401.11864
+2024-12-24 11:54:22,162 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.17919
+2024-12-24 11:54:22,586 - database - INFO - Adding new paper: https://huggingface.co/papers/2401.17919
+2024-12-24 11:54:22,586 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.17919: year 0 is out of range
+2024-12-24 11:54:23,018 - database - INFO - Successfully added paper for https://huggingface.co/papers/2401.17919
+2024-12-24 11:54:23,806 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2402.01622
+2024-12-24 11:54:24,234 - database - INFO - Adding new paper: https://huggingface.co/papers/2402.01622
+2024-12-24 11:54:25,062 - database - INFO - Successfully added paper for https://huggingface.co/papers/2402.01622
+2024-12-24 11:54:26,120 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.10150
+2024-12-24 11:54:26,548 - database - INFO - Adding new paper: https://huggingface.co/papers/2401.10150
+2024-12-24 11:54:26,549 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.10150: year 0 is out of range
+2024-12-24 11:54:27,017 - database - INFO - Successfully added paper for https://huggingface.co/papers/2401.10150
+2024-12-24 11:54:27,770 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.04925
+2024-12-24 11:54:28,197 - database - INFO - Adding new paper: https://huggingface.co/papers/2401.04925
+2024-12-24 11:54:28,634 - database - INFO - Successfully added paper for https://huggingface.co/papers/2401.04925
+2024-12-24 11:54:37,288 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2312.12655
+2024-12-24 11:54:37,619 - database - INFO - Adding new paper: https://huggingface.co/papers/2312.12655
+2024-12-24 11:54:37,621 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2312.12655: year 0 is out of range
+2024-12-24 11:54:37,998 - database - INFO - Successfully added paper for https://huggingface.co/papers/2312.12655
+2024-12-24 11:54:38,898 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.12973
+2024-12-24 11:54:39,291 - database - INFO - Adding new paper: https://huggingface.co/papers/2401.12973
+2024-12-24 11:54:39,292 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.12973: year 0 is out of range
+2024-12-24 11:54:39,711 - database - INFO - Successfully added paper for https://huggingface.co/papers/2401.12973
+2024-12-24 11:54:40,387 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2312.07509
+2024-12-24 11:54:40,819 - database - INFO - Adding new paper: https://huggingface.co/papers/2312.07509
+2024-12-24 11:54:41,628 - database - INFO - Successfully added paper for https://huggingface.co/papers/2312.07509
+2024-12-24 11:54:42,587 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.09334
+2024-12-24 11:54:42,912 - database - INFO - Adding new paper: https://huggingface.co/papers/2401.09334
+2024-12-24 11:54:42,913 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.09334: year 0 is out of range
+2024-12-24 11:54:43,284 - database - INFO - Successfully added paper for https://huggingface.co/papers/2401.09334
+2024-12-24 11:54:44,564 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.06104
+2024-12-24 11:54:44,940 - database - INFO - Adding new paper: https://huggingface.co/papers/2401.06104
+2024-12-24 11:54:45,374 - database - INFO - Successfully added paper for https://huggingface.co/papers/2401.06104
+2024-12-24 11:54:54,812 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.04081
+2024-12-24 11:54:55,250 - database - INFO - Adding new paper: https://huggingface.co/papers/2401.04081
+2024-12-24 11:54:55,691 - database - INFO - Successfully added paper for https://huggingface.co/papers/2401.04081
+2024-12-24 11:54:56,588 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2312.05288
+2024-12-24 11:54:57,024 - database - INFO - Adding new paper: https://huggingface.co/papers/2312.05288
+2024-12-24 11:54:57,024 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2312.05288: year 0 is out of range
+2024-12-24 11:54:57,375 - database - INFO - Successfully added paper for https://huggingface.co/papers/2312.05288
+2024-12-24 11:54:58,042 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2312.04862
+2024-12-24 11:54:58,485 - database - INFO - Adding new paper: https://huggingface.co/papers/2312.04862
+2024-12-24 11:54:58,486 - database - WARNING - Invalid publication date in https://huggingface.co/papers/2312.04862: year 0 is out of range
+2024-12-24 11:54:58,486 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2312.04862: year 0 is out of range
+2024-12-24 11:54:58,927 - database - INFO - Successfully added paper for https://huggingface.co/papers/2312.04862
+2024-12-24 11:54:59,652 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.12160
+2024-12-24 11:55:00,445 - database - INFO - Adding new paper: https://huggingface.co/papers/2401.12160
+2024-12-24 11:55:00,445 - database - WARNING - Invalid publication date in https://huggingface.co/papers/2401.12160: year 0 is out of range
+2024-12-24 11:55:00,445 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.12160: year 0 is out of range
+2024-12-24 11:55:00,864 - database - INFO - Successfully added paper for https://huggingface.co/papers/2401.12160
+2024-12-24 11:55:01,648 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.04558
+2024-12-24 11:55:02,040 - database - INFO - Adding new paper: https://huggingface.co/papers/2401.04558
+2024-12-24 11:55:02,040 - database - WARNING - Invalid publication date in https://huggingface.co/papers/2401.04558: year 0 is out of range
+2024-12-24 11:55:02,041 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.04558: year 0 is out of range
+2024-12-24 11:55:02,411 - database - INFO - Successfully added paper for https://huggingface.co/papers/2401.04558
+2024-12-24 11:55:11,464 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2312.08979
+2024-12-24 11:55:11,816 - database - INFO - Adding new paper: https://huggingface.co/papers/2312.08979
+2024-12-24 11:55:11,817 - database - WARNING - Invalid publication date in https://huggingface.co/papers/2312.08979: year 0 is out of range
+2024-12-24 11:55:11,817 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2312.08979: year 0 is out of range
+2024-12-24 11:55:12,187 - database - INFO - Successfully added paper for https://huggingface.co/papers/2312.08979
+2024-12-24 11:55:13,045 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.01735
+2024-12-24 11:55:13,434 - database - INFO - Adding new paper: https://huggingface.co/papers/2401.01735
+2024-12-24 11:55:13,434 - database - WARNING - Invalid publication date in https://huggingface.co/papers/2401.01735: year 0 is out of range
+2024-12-24 11:55:13,434 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.01735: year 0 is out of range
+2024-12-24 11:55:13,802 - database - INFO - Successfully added paper for https://huggingface.co/papers/2401.01735
+2024-12-24 11:55:14,579 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2312.16471
+2024-12-24 11:55:14,976 - database - INFO - Adding new paper: https://huggingface.co/papers/2312.16471
+2024-12-24 11:55:14,976 - database - WARNING - Invalid publication date in https://huggingface.co/papers/2312.16471: year 0 is out of range
+2024-12-24 11:55:14,977 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2312.16471: year 0 is out of range
+2024-12-24 11:55:15,374 - database - INFO - Successfully added paper for https://huggingface.co/papers/2312.16471
+2024-12-24 11:55:16,118 - database - INFO - Adding/updating paper: https://huggingface.co/papers/2401.05190
+2024-12-24 11:55:16,562 - database - INFO - Updating existing paper: https://huggingface.co/papers/2401.05190
+2024-12-24 11:55:16,563 - database - WARNING - Invalid submission date in https://huggingface.co/papers/2401.05190: year 0 is out of range
+2024-12-24 11:55:16,770 - database - INFO - Successfully updated paper for https://huggingface.co/papers/2401.05190

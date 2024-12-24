@@ -28,6 +28,9 @@ __pycache__/
 # Database migrations
 migrate_to_v1.py
 migrate_to_v2.py
+migrate_to_v3.py
+revert_to_v2.py
+migrate_make_dates_nullable.py
 
 # Logs directory
 logs/

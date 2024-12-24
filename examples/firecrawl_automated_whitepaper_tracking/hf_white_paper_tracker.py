@@ -72,3 +72,4 @@ if __name__ == "__main__":
 
 # TODO: Include a Bluesky API call to publish the paper's posts to Bluesky. This will require a new
 # llm flow to generate the post content and a new function to send the post to Bluesky.
+# TODO: test db connection and add check for db versoin matching supabase_db.py before running any modules

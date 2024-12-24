@@ -1,0 +1,5 @@
+2024-12-24 11:44:08,915 - hf_paper_tracker - INFO - Using provided full URL: https://huggingface.co/papers?date=2024-02-26
+2024-12-24 11:44:08,915 - hf_paper_tracker - INFO - Starting URL extraction from: https://huggingface.co/papers?date=2024-02-26
+2024-12-24 11:44:08,915 - hf_paper_tracker - INFO - Crawling URL with params: {'limit': 30, 'excludePaths': ['papers$'], 'includePaths': ['papers/*'], 'ignoreSitemap': True, 'scrapeOptions': {'formats': ['markdown', 'links', 'html'], 'onlyMainContent': False, 'includeTags': ['a']}}
+2024-12-24 11:44:33,710 - hf_paper_tracker - INFO - Extracted 29 paper URLs
+2024-12-24 11:44:33,711 - hf_paper_tracker - INFO - Found 29 papers to process
