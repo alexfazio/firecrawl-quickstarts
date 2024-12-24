@@ -290,3 +290,4 @@ if __name__ == "__main__":
         logger.error("Test failed! ❌ Error: %s", str(e))
 
 # TODO: stream the DB contents to a Notion database a la Chief AI Officer database
+# TODO: make db entries nullable. this will require db migrations.
