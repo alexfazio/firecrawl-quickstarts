@@ -146,47 +146,57 @@ class Database:
             action = "Adding new" if is_new_paper else "Updating existing"
             logger.info("%s paper: %s", action, paper_data['url'])
 
-            # Date handling with logging
-            try:
-                publication_date = datetime(
-                    paper_data["utc_publication_date_year"],
-                    paper_data["utc_publication_date_month"],
-                    paper_data["utc_publication_date_day"]
-                )
-            except ValueError as e:
-                logger.warning("Invalid publication date in %s: %s", paper_data['url'], e)
-                publication_date = datetime.now()
+            if paper_data.get("extraction_success"):
+                # Date handling with logging
+                try:
+                    publication_date = datetime(
+                        paper_data["utc_publication_date_year"],
+                        paper_data["utc_publication_date_month"],
+                        paper_data["utc_publication_date_day"]
+                    )
+                except ValueError as e:
+                    logger.warning("Invalid publication date in %s: %s", paper_data['url'], e)
+                    publication_date = datetime.now()
 
-            try:
-                submission_date = datetime(
-                    paper_data["utc_submission_date_year"],
-                    paper_data["utc_submission_date_month"],
-                    paper_data["utc_submission_date_day"]
-                )
-            except ValueError as e:
-                logger.warning("Invalid submission date in %s: %s", paper_data['url'], e)
-                submission_date = datetime.now()
+                try:
+                    submission_date = datetime(
+                        paper_data["utc_submission_date_year"],
+                        paper_data["utc_submission_date_month"],
+                        paper_data["utc_submission_date_day"]
+                    )
+                except ValueError as e:
+                    logger.warning("Invalid submission date in %s: %s", paper_data['url'], e)
+                    submission_date = datetime.now()
 
-            # Create/update the paper entry with metrics
-            paper = Paper(
-                url=paper_data["url"],
-                title=paper_data["paper_title"],
-                authors=paper_data["authors"].split(", "),
-                abstract=paper_data["abstract_body"],
-                pdf_url=paper_data["view_pdf_url"],
-                arxiv_url=paper_data["view_arxiv_page_url"],
-                github_url=paper_data["github_repo_url"],
-                publication_date=publication_date,
-                submission_date=submission_date,
-                upvotes=paper_data["number_of_upvotes"],
-                comments=paper_data["number_of_comments"]
-            )
-            
+                # Create/update the paper entry with metrics
+                paper = Paper(
+                    url=paper_data["url"],
+                    title=paper_data["paper_title"],
+                    authors=paper_data["authors"].split(", "),
+                    abstract=paper_data["abstract_body"],
+                    pdf_url=paper_data.get("view_pdf_url"),
+                    arxiv_url=paper_data.get("view_arxiv_page_url"),
+                    github_url=paper_data.get("github_repo_url"),
+                    publication_date=publication_date,
+                    submission_date=submission_date,
+                    upvotes=paper_data.get("number_of_upvotes", 0),
+                    comments=paper_data.get("number_of_comments", 0)
+                )
+            else:
+                # Handle failed extraction
+                paper = Paper(
+                    url=paper_data["url"],
+                    extraction_success=False,
+                    extraction_error=paper_data.get("extraction_error"),
+                    last_extraction_attempt=paper_data["last_extraction_attempt"],
+                    notification_sent=paper_data.get("notification_sent", False)
+                )
+
             logger.debug("Merging paper data for %s", paper_data['url'])
             session.merge(paper)
             session.commit()
             logger.info("Successfully %s paper for %s", 
-                       'added' if is_new_paper else 'updated', paper_data['url'])
+                    'added' if is_new_paper else 'updated', paper_data['url'])
             
             return is_new_paper
         except Exception as e:
