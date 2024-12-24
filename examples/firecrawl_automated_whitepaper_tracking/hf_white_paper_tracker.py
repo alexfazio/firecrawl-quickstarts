@@ -28,6 +28,42 @@ from examples.firecrawl_automated_whitepaper_tracking.logging_config import setu
 # Initialize logger
 logger = setup_crawler_logging()
 
+def verify_database_connection(db: Database) -> tuple[bool, str]:
+    """Test database connection and return status."""
+    logger.debug("Verifying database connection...")
+    try:
+        db.get_all_papers()
+        return True, "Database connection successful"
+    except SQLAlchemyError as e:
+        logger.error("Database connection failed: %s", str(e))
+        return False, f"Database connection failed: {str(e)}"
+
+def verify_database_version(db: Database) -> tuple[bool, str]:
+    """Verify database schema version matches required version."""
+    logger.debug("Verifying database schema version...")
+    try:
+        session = db.session_factory()
+        db._check_schema_version()
+        session.close()
+        return True, f"Database schema version verified"
+    except RuntimeError as e:
+        logger.error("Database version check failed: %s", str(e))
+        return False, str(e)
+
+def perform_startup_checks(db: Database) -> None:
+    """Perform all startup checks before proceeding."""
+    # Database connection check
+    connection_ok, connection_msg = verify_database_connection(db)
+    logger.info(connection_msg)
+    if not connection_ok:
+        raise RuntimeError(connection_msg)
+
+    # Database version check
+    version_ok, version_msg = verify_database_version(db)
+    logger.info(version_msg)
+    if not version_ok:
+        raise RuntimeError(version_msg)
+
 def run_paper_tracker(url: Optional[str] = None, date: Optional[str] = None) -> None:
     """
     Main function to run the paper tracking process.
@@ -36,6 +72,13 @@ def run_paper_tracker(url: Optional[str] = None, date: Optional[str] = None) -> 
         url (Optional[str]): Full URL to crawl (e.g., https://huggingface.co/papers?date=2024-12-19)
         date (Optional[str]): Date in YYYY-MM-DD format (e.g., 2024-12-19)
     """
+    # Initialize database first
+    db = Database(os.getenv("POSTGRES_URL"))
+    logger.info("Database connection initialized")
+    
+    # Perform startup checks before proceeding
+    perform_startup_checks(db)
+    
     # Determine which URL to use
     if url:
         papers_url = url
@@ -49,9 +92,6 @@ def run_paper_tracker(url: Optional[str] = None, date: Optional[str] = None) -> 
     
     urls = extract_paper_urls(papers_url)
     logger.info("Found %d papers to process", len(urls))
-    
-    db = Database(os.getenv("POSTGRES_URL"))
-    logger.info("Database connection established")
     
     try:
         asyncio.run(process_paper_batch(urls, db))

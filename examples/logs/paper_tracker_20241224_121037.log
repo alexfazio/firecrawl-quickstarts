@@ -1,0 +1,37 @@
+2024-12-24 12:10:39,825 - hf_paper_tracker - INFO - Database connection initialized
+2024-12-24 12:10:41,644 - hf_paper_tracker - INFO - Database connection successful
+2024-12-24 12:10:42,177 - hf_paper_tracker - INFO - Database schema version verified
+2024-12-24 12:10:42,178 - hf_paper_tracker - INFO - Using provided full URL: https://huggingface.co/papers?date=2024-02-05
+2024-12-24 12:10:42,178 - hf_paper_tracker - INFO - Starting URL extraction from: https://huggingface.co/papers?date=2024-02-05
+2024-12-24 12:10:42,180 - hf_paper_tracker - INFO - Crawling URL with params: {'limit': 30, 'excludePaths': ['papers$'], 'includePaths': ['papers/*'], 'ignoreSitemap': True, 'scrapeOptions': {'formats': ['markdown', 'links', 'html'], 'onlyMainContent': False, 'includeTags': ['a']}}
+2024-12-24 12:11:10,072 - hf_paper_tracker - INFO - Extracted 29 paper URLs
+2024-12-24 12:11:10,072 - hf_paper_tracker - INFO - Found 29 papers to process
+2024-12-24 12:11:10,073 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2402.01391
+2024-12-24 12:11:10,080 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2402.01622
+2024-12-24 12:11:10,082 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2402.01118
+2024-12-24 12:11:10,085 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2402.01521
+2024-12-24 12:11:10,089 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2402.01566
+2024-12-24 12:11:19,508 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2402.01032
+2024-12-24 12:11:19,512 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2402.01093
+2024-12-24 12:11:19,514 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2402.01613
+2024-12-24 12:11:19,518 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2402.00892
+2024-12-24 12:11:19,520 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2312.05657
+2024-12-24 12:11:30,703 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.07576
+2024-12-24 12:11:30,706 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.17167
+2024-12-24 12:11:30,708 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2312.17515
+2024-12-24 12:11:30,712 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.16637
+2024-12-24 12:11:30,714 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.11864
+2024-12-24 12:11:53,205 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2312.05288
+2024-12-24 12:11:53,207 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.09334
+2024-12-24 12:11:53,210 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.02500
+2024-12-24 12:11:53,213 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.04157
+2024-12-24 12:11:53,216 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2312.15692
+2024-12-24 12:12:08,154 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.02777
+2024-12-24 12:12:08,156 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2312.05230
+2024-12-24 12:12:08,158 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.05190
+2024-12-24 12:12:08,160 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.04925
+2024-12-24 12:12:08,162 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.01275
+2024-12-24 12:12:23,085 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2312.07509
+2024-12-24 12:12:23,089 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.17749
+2024-12-24 12:12:23,091 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.01735
+2024-12-24 12:12:23,094 - hf_paper_tracker - INFO - Extracting paper details from: https://huggingface.co/papers/2401.07870
