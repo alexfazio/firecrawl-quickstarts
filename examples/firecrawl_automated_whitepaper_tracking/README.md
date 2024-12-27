@@ -104,7 +104,38 @@ flowchart TB
      pg_config --version
      ```
 
-5. Configure environment variables:
+5. Set up Supabase Database:
+   1. Create a Supabase account at [Supabase](https://supabase.com)
+   2. Create a new project
+   3. Go to Project Settings > Database
+   4. Note down:
+      - Database password (set during project creation)
+      - Connection string/URI
+      - Project reference ID
+   5. Enable the PostgREST API:
+      - Go to Project Settings > API
+      - Ensure PostgREST is enabled
+   6. Configure database tables:
+      - The application will automatically create the required tables:
+        - `papers`: Stores paper information and tracking status
+        - `schema_version`: Manages database migrations
+   7. Important connection string notes:
+      - For local development, use port 5432:
+        ```
+        POSTGRES_URL=postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres?sslmode=require
+        ```
+      - For GitHub Actions, use port 6543:
+        ```
+        POSTGRES_URL=postgresql://postgres.[YOUR-PROJECT-REF]:[YOUR-PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?sslmode=require
+        ```
+      - Remember to URL-encode special characters in your password:
+        - `#` → `%23`
+        - `$` → `%24`
+        - `^` → `%5E`
+        - `&` → `%26`
+        - `@` stays as `@`
+
+6. Configure environment variables:
    ```bash
    cp .env.example .env
    ```
@@ -129,20 +160,11 @@ flowchart TB
       ```
 
    c. Supabase Database URL:
-   1. Go to Supabase Project Settings > Database
-   2. Copy the connection string under "URI"
-   3. Add to `.env`:
+   1. Use the connection string from your Supabase setup (Step 5)
+   2. Add to `.env`:
       ```
-      POSTGRES_URL=postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres?sslmode=require
+      POSTGRES_URL=<your-connection-string>
       ```
-   4. Replace `[YOUR-PASSWORD]` with your database password
-   5. Replace `[YOUR-PROJECT-REF]` with your project reference
-   6. URL-encode any special characters in the password:
-      - `#` becomes `%23`
-      - `@` stays as `@`
-      - `$` becomes `%24`
-      - `^` becomes `%5E`
-      - `&` becomes `%26`
 
    d. OpenAI API Key:
    1. Sign up at [OpenAI](https://platform.openai.com)
@@ -153,7 +175,7 @@ flowchart TB
       OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
       ```
 
-6. Configure paper category filtering:
+7. Configure paper category filtering:
    ```bash
    cp category_prompt.example.py category_prompt.py
    ```
