@@ -156,6 +156,55 @@ The application uses a PostgreSQL database with the following schema:
 | version   | Integer   | Schema version number                 |
 | applied_at| Timestamp | When this version was applied        |
 
+## Deployment Options
+
+### Local Deployment
+Follow the setup instructions above for running the tracker locally.
+
+### GitHub Actions Deployment (Recommended)
+This project includes GitHub Actions workflow configuration for automated paper tracking. The workflow:
+- Runs every 12 hours automatically
+- Can be triggered manually via workflow_dispatch
+- Sends notifications on both success and failure
+
+To set up with GitHub Actions:
+
+1. Fork/clone this repository to your GitHub account
+
+2. Set up GitHub Secrets:
+   Go to your repository's Settings > Secrets and Variables > Actions and add the following secrets:
+
+   ```
+   DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN
+   FIRECRAWL_API_KEY=fc-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   POSTGRES_URL=postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres?sslmode=require
+   OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   ```
+
+   Note: Make sure your Supabase database URL uses port 6543 for GitHub Actions compatibility.
+
+3. Configure your tracking preferences:
+   - Fork the repository
+   - Edit `category_prompt.py` to define your paper interests
+   - Commit the changes to your repository
+
+4. Enable GitHub Actions:
+   - Go to your repository's Actions tab
+   - Enable workflows if they're not already enabled
+   - The `Paper Tracker` workflow will now run automatically every 12 hours
+
+5. Monitor the workflow:
+   - Check the Actions tab for run history and logs
+   - Failed runs will send notifications to your configured Discord channel
+   - Successful runs will send notifications only for relevant papers
+
+The workflow is defined in `.github/workflows/paper-tracker.yml` and includes:
+- Python 3.10 setup
+- Poetry dependency management
+- Database connection testing
+- Automatic error notifications via Discord
+
+You can also trigger the workflow manually from the Actions tab using the "Run workflow" button.
 
 TODO: Update the GitHub Actions workflow to trigger based on actual changes to the 
 Hugging Face Daily Papers page instead of using a scheduled cron job. This can be accomplished by:
