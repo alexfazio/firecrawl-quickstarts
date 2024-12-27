@@ -24,7 +24,6 @@ This system provides **automated notifications** about the latest white papers p
 3. Set up a Discord webhook for receiving notifications.
 4. Run the system to start tracking and getting updates.
 
-
 ## Setup
 
 1. Clone the repository
