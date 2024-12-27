@@ -90,13 +90,13 @@ This system provides **automated notifications** about the latest white papers p
       - `^` becomes `%5E`
       - `&` becomes `%26`
 
-   d. OpenRouter API Key:
-   1. Sign up at [OpenRouter](https://openrouter.ai)
-   2. Go to your dashboard
+   d. OpenAI API Key:
+   1. Sign up at [OpenAI](https://platform.openai.com)
+   2. Go to API Keys section
    3. Create a new API key
    4. Add to `.env`:
       ```
-      OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
       ```
 
 6. Configure paper category filtering:
@@ -117,7 +117,7 @@ Your final `.env` file should look like:
 DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/1234567890/abcdef...
 FIRECRAWL_API_KEY=fc-f6ff27d623e548f390bdc0b9debefe59
 POSTGRES_URL=postgresql://postgres:mypassword123@db.abcdefghijklm.supabase.co:5432/postgres?sslmode=require
-OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 TODO: Create a `.env.example` file with placeholder values after testing is complete, to serve as a template for new users.
