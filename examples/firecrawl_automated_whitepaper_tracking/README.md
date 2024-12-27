@@ -135,7 +135,39 @@ flowchart TB
         - `&` → `%26`
         - `@` stays as `@`
 
-6. Configure environment variables:
+6. Set up Discord Notifications:
+   1. Create a Discord server (skip if you already have one)
+   2. Create a channel for paper notifications
+   3. Configure the webhook:
+      - Go to Server Settings > Integrations
+      - Click on "Create Webhook" (or edit an existing one)
+      - Set a name for your webhook (e.g., "Paper Tracker")
+      - Select the channel where notifications should be sent
+      - Copy the Webhook URL
+   4. Important webhook URL format:
+      ```
+      https://discord.com/api/webhooks/{webhook.id}/{webhook.token}
+      ```
+   5. The notifications will include:
+      - Paper title
+      - Authors
+      - Abstract (first 500 characters)
+      - Engagement stats (upvotes and comments)
+      - Links to:
+        - PDF version
+        - arXiv page
+        - GitHub repository (if available)
+        - Original HuggingFace post
+   6. Security notes:
+      - Keep your webhook URL private
+      - The webhook URL contains a secret token
+      - If compromised, you can regenerate the webhook token in Discord
+      - Add the URL to your `.env` file:
+        ```
+        DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN
+        ```
+
+7. Configure environment variables:
    ```bash
    cp .env.example .env
    ```
@@ -175,7 +207,7 @@ flowchart TB
       OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
       ```
 
-7. Configure paper category filtering:
+8. Configure paper category filtering:
    ```bash
    cp category_prompt.example.py category_prompt.py
    ```
