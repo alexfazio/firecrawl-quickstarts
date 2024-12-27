@@ -1,21 +1,29 @@
 # Hugging Face "Daily Papers" Tracker
 
-An intelligent tracking system that monitors Hugging Face Daily Papers using Firecrawl for efficient web scraping and data extraction. The system employs semantic filtering (powered by GPT-4-mini) to identify and notify users about relevant publications via Discord. Papers are automatically crawled, processed, and filtered based on their content relevance. Currently configured to track AI Agent-related papers, but easily adaptable to other research interests.
+This system provides **automated notifications** about the latest white papers published on the [Hugging Face Daily Papers](https://huggingface.co/papers) page. Using **Firecrawl's semantic crawling and scraping capabilities** (Crawl and Extract APIs), it fetches and processes new publications daily. The system uses semantic filtering to determine which papers are most relevant to the user's interests, based on a user-defined category prompt, and delivers notifications directly to Discord.
 
-## Features
+### Key Features
+- **Daily Notifications**: Receive real-time updates about the latest papers that match your research interests.
+- **Firecrawl Integration**:
+  - **Crawl API**: Retrieves the list of newly published papers from the Hugging Face Daily Papers page.
+  - **Extract API**: Extracts structured and semantically enriched data from each paper for filtering and analysis.
+- **Semantic Filtering**: Matches papers to the user's category of interest using a customizable category prompt.
+- **Customizable Interests**: Easily define your research area by editing the `category_prompt` file.
+- **Default Configuration**: Preconfigured to track papers related to AI Agents, but can be adapted for any topic.
 
-- Leverages Firecrawl for robust paper extraction and metadata collection
-- Automatically notifies about Hugging Face Daily Papers releases
-- Scans for new papers every 6 hours
-- Currently supports [Hugging Face Papers](https://huggingface.co/papers) only
-- Delivers paper notifications via Discord
-- Stores historical white paper data in a PostgreSQL database
-- Provides an interactive visualization of paper history with Streamlit
-- Implements semantic filtering to only notify about relevant papers:
-  - Uses GPT-4-mini to analyze paper content
-  - Filters papers based on customizable category definitions
-  - Currently focused on "AI Agents" papers (configurable in `category_prompt.py`)
-  - Notifications are only sent for papers with high relevance confidence (>80%)
+### How It Works
+1. **Crawl**: The system uses the Firecrawl Crawl API to retrieve today's list of papers from the Hugging Face Daily Papers page.
+2. **Extract**: It processes and extracts structured semantic data from each paper using the Firecrawl Extract API.
+3. **Store**: All extracted paper data is stored in a **Supabase database** for future reference and analysis.
+4. **Filter**: Semantic filtering identifies papers relevant to the category defined in `category_prompt`.
+5. **Notify**: Sends summaries of the filtered papers directly to a Discord channel.
+
+### Setup
+1. Configure your Firecrawl API keys.
+2. Modify the `category_prompt` to specify your topic of interest.
+3. Set up a Discord webhook for receiving notifications.
+4. Run the system to start tracking and getting updates.
+
 
 ## Setup
 
@@ -91,6 +99,19 @@ An intelligent tracking system that monitors Hugging Face Daily Papers using Fir
       OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
       ```
 
+6. Configure paper category filtering:
+   ```bash
+   cp category_prompt.example.py category_prompt.py
+   ```
+   Then edit `category_prompt.py` to define your `DESIRED_CATEGORY`. This string defines what papers are considered relevant and will trigger notifications. 
+   
+   The default configuration is set up for "AI Agents" papers, but you can modify it for your needs.
+
+   The semantic filter uses this definition to determine:
+   - Which papers trigger Discord notifications
+   - Classification confidence threshold (default: 0.8)
+   - Categorization criteria for the LLM-based filter
+
 Your final `.env` file should look like:
 ```
 DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/1234567890/abcdef...
@@ -109,20 +130,24 @@ The application uses a PostgreSQL database with the following schema:
 
 ### Papers Table
 
-| Column           | Type      | Description                                    |
-|-----------------|-----------|------------------------------------------------|
-| url             | String    | Primary key - unique paper URL                 |
-| title           | String    | Paper title                                    |
-| authors         | String[]  | Array of author names                          |
-| abstract        | Text      | Paper abstract                                 |
-| pdf_url         | String    | URL to PDF version                            |
-| arxiv_url       | String    | URL to arXiv page                             |
-| github_url      | String    | URL to GitHub repository                       |
-| publication_date| DateTime  | Original publication date                      |
-| submission_date | DateTime  | Date added to HuggingFace                     |
-| upvotes         | Integer   | Current number of upvotes                      |
-| comments        | Integer   | Current number of comments                     |
-| last_updated    | DateTime  | Last time the record was updated              |
+| Column                  | Type      | Description                                           |
+|------------------------|-----------|-------------------------------------------------------|
+| url                    | String    | Primary key - unique paper URL                        |
+| title                  | String    | Paper title                                           |
+| authors                | String[]  | Array of author names                                 |
+| abstract               | Text      | Paper abstract                                        |
+| pdf_url                | String    | URL to PDF version                                    |
+| arxiv_url              | String    | URL to arXiv page                                     |
+| github_url             | String    | URL to GitHub repository                              |
+| publication_date       | DateTime  | Original publication date                             |
+| submission_date        | DateTime  | Date added to HuggingFace                            |
+| upvotes                | Integer   | Current number of upvotes (default: 0)                |
+| comments               | Integer   | Current number of comments (default: 0)               |
+| last_updated          | DateTime  | Last time the record was updated                      |
+| notification_sent     | Boolean   | Whether notification was sent (default: false)        |
+| extraction_success    | Boolean   | Whether extraction succeeded (default: true)          |
+| extraction_error      | Text      | Error message if extraction failed (nullable)         |
+| last_extraction_attempt| DateTime  | When the last extraction was attempted               |
 
 ### Schema Version Table
 
