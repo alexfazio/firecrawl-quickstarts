@@ -260,7 +260,9 @@ The workflow is defined in `.github/workflows/paper-tracker.yml` and includes:
 
 You can also trigger the workflow manually from the Actions tab using the "Run workflow" button.
 
-TODO: Update the GitHub Actions workflow to trigger based on actual changes to the 
+## TODOs
+
+- [ ] Update the GitHub Actions workflow to trigger based on actual changes to the 
 Hugging Face Daily Papers page instead of using a scheduled cron job. This can be accomplished by:
 1. Creating a GitHub Action that checks for changes to the page content/hash
 2. Only triggering the main paper tracking workflow when changes are detected
