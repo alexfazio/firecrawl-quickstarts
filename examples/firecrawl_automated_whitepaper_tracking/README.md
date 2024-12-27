@@ -18,6 +18,61 @@ This system provides **automated notifications** about the latest white papers p
 4. **Filter**: Semantic filtering identifies papers relevant to the category defined in `category_prompt`.
 5. **Notify**: Sends summaries of the filtered papers directly to a Discord channel.
 
+### System Architecture
+```mermaid
+flowchart TB
+    subgraph entry ["Entry Points"]
+        CLI["CLI Arguments\n--url or --date"]
+        GHA["GitHub Actions\nScheduled/Manual Trigger"]
+    end
+
+    subgraph hf_white_paper_tracker ["hf_white_paper_tracker.py"]
+        A[Initialize Logger] --> B[Initialize Database]
+        B --> C[Verify DB Connection/Version]
+        C --> D{"URL Source?"}
+        D -->|CLI Args| E1["Use Provided URL"]
+        D -->|No Args| E2["Get Today's URL"]
+        E1 --> F[Run Paper Tracker]
+        E2 --> F
+    end
+
+    subgraph firecrawl_crawl_extract ["firecrawl_crawl_extract.py"]
+        G[Extract Paper URLs] --> H[Process Paper Batch]
+        H --> I[Extract Paper Details]
+    end
+
+    subgraph semantic_filter ["semantic_filter.py"]
+        J[Load Category Definition] --> K[Classify Paper]
+        K --> L{Meets Criteria?}
+    end
+
+    subgraph discord_notifications ["discord_notifications.py"]
+        M[Format Message] --> N[Send to Discord]
+    end
+
+    subgraph supabase_db ["supabase_db.py"]
+        O[Store Paper Data] --> P[Update Status]
+    end
+
+    %% Module connections
+    CLI -->|Optional| hf_white_paper_tracker
+    GHA -->|Scheduled| hf_white_paper_tracker
+    F -->|Calls| G
+    I -->|Passes paper data| J
+    L -->|Yes| M
+    L -->|No| O
+    N -->|Update notification status| P
+
+    %% Environment dependencies
+    env[".env File"] -.->|Config| hf_white_paper_tracker
+    category[category_prompt.py] -.->|Definition| semantic_filter
+
+    classDef module fill:#f9f,stroke:#333,stroke-width:2px;
+    class hf_white_paper_tracker,firecrawl_crawl_extract,semantic_filter,discord_notifications,supabase_db module;
+    classDef entry fill:#aaf,stroke:#333,stroke-width:2px;
+    class CLI,GHA entry;
+```
+
 ### Setup
 1. Configure your Firecrawl API keys.
 2. Modify the `category_prompt` to specify your topic of interest.
