@@ -32,7 +32,7 @@ migrate_to_v3.py
 revert_to_v2.py
 migrate_make_dates_nullable.py
 
-# Logs directory
+# Logs directory - comprehensive exclusion
 logs/
 *.log
 examples/logs/
