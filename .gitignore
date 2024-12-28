@@ -98,3 +98,12 @@ __pycache__/
 *.pyd
 .Python
 .python-version
+
+# VSCode
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+*.code-workspace
+.history/
+.settings/
