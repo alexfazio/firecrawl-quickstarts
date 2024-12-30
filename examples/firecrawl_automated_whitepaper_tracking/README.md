@@ -1,3 +1,10 @@
+<a href="https://x.com/alxfazio" target="_blank">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../../images/hf-daily-papers-github-logo.png">
+    <img alt="Firecrawl Quickstarts Logo" src="../../images/hf-daily-papers-github-logo.png" width="400px" style="max-width: 100%; margin-bottom: 20px;">
+  </picture>
+</a>
+
 # Hugging Face "Daily Papers" Tracker
 
 This system provides **automated notifications** about the latest white papers published on the [Hugging Face Daily Papers](https://huggingface.co/papers) page. Using **Firecrawl's semantic crawling and scraping capabilities** (Crawl and Extract APIs), it fetches and processes new publications daily. The system uses semantic filtering to determine which papers are most relevant to the user's interests, based on a user-defined category prompt, and delivers notifications directly to Discord.
