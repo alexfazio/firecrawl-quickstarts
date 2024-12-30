@@ -1,0 +1,58 @@
+name: Paper Tracker
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+
+jobs:
+  track-papers:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/firecrawl_automated_whitepaper_tracking
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry --version
+
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      - name: Test Database Connection (Optional)
+        env:
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}  # <-- Must be port 6543 now
+        run: |
+          echo "Testing database connection with psql..."
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          psql "$POSTGRES_URL" -c '\conninfo'
+
+      - name: Run paper tracker
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}  # <-- Also port 6543 here
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          poetry run python hf_white_paper_tracker.py
+
+      - name: Notify on Failure
+        if: failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" -X POST \
+               -d '{"content":"⚠️ Paper Tracker workflow failed! Please check the GitHub Actions logs."}' \
+               $DISCORD_WEBHOOK_URL
