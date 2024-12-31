@@ -323,7 +323,7 @@ You can also trigger the workflow manually from the Actions tab using the "Run w
 
 ## TODOs
 
-- [ ] Update the GitHub Actions workflow to trigger based on actual changes to the 
+[ ] Update the GitHub Actions workflow to trigger based on actual changes to the 
    Hugging Face Daily Papers page instead of using a scheduled cron job. This can be accomplished by:
    1. Creating a GitHub Action that checks for changes to the page content/hash
    2. Only triggering the main paper tracking workflow when changes are detected
@@ -331,3 +331,6 @@ You can also trigger the workflow manually from the Actions tab using the "Run w
       - More timely updates as papers are published
       - More efficient use of API credits by avoiding unnecessary checks
       - Reduced latency between paper publication and notification
+[ ] Implement Hugging Face Daily Papers API to reduce API costs in calling scraping, and crawling models.
+   - API: https://huggingface.co/api/daily_papers
+   - Docs: https://huggingface.co/docs/hub/en/api#paper-pages-api
