@@ -334,3 +334,37 @@ You can also trigger the workflow manually from the Actions tab using the "Run w
 [ ] Implement Hugging Face Daily Papers API to reduce API costs in calling scraping, and crawling models.
    - API: https://huggingface.co/api/daily_papers
    - Docs: https://huggingface.co/docs/hub/en/api#paper-pages-api
+
+### X (Twitter) API Setup
+
+The system uses X's OAuth 2.0 for posting updates. This requires a one-time local authorization:
+
+1. Configure X API credentials in `.env`:
+   ```
+   X_OAUTH2_CLIENT_ID=your_client_id
+   X_OAUTH2_CLIENT_SECRET=your_client_secret
+   ```
+
+2. Run the script locally ONCE to authorize:
+   ```bash
+   python x_post.py
+   ```
+   This will:
+   - Open a browser window
+   - Prompt for X account authorization
+   - Store OAuth tokens in your `.env` file:
+     ```
+     X_ACCESS_TOKEN=...
+     X_REFRESH_TOKEN=...
+     X_TOKEN_EXPIRES_IN=...
+     X_TOKEN_SCOPE=...
+     ```
+
+3. After authorization:
+   - The tokens are stored in `.env`
+   - Copy the updated `.env` to your server
+   - Subsequent runs will use stored tokens
+   - No browser interaction needed
+   - Works in automated environments
+
+Note: Keep your `.env` file secure and never commit it to version control.
