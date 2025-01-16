@@ -8,7 +8,7 @@ from pydantic import BaseModel, ValidationError
 from dotenv import load_dotenv
 
 import openai
-from examples.firecrawl_automated_whitepaper_tracking.logging_config import setup_semantic_filter_logging, log_function_call
+from logging_config import setup_semantic_filter_logging, log_function_call
 
 # Load environment variables
 load_dotenv()
