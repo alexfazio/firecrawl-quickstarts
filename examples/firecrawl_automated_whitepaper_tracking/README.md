@@ -367,6 +367,17 @@ The system uses X's OAuth 2.0 for posting updates. This requires a one-time loca
    - No browser interaction needed
    - Works in automated environments
 
+4. To disable X posting:
+   - Comment out the token-related variables in `.env`:
+     ```
+     # X_ACCESS_TOKEN=...
+     # X_REFRESH_TOKEN=...
+     # X_TOKEN_EXPIRES_IN=...
+     # X_TOKEN_SCOPE=...
+     ```
+   - Uncomment to re-enable posting
+   - Original credentials are preserved for future use
+
 Note: Keep your `.env` file secure and never commit it to version control.
 
 ## Local Testing with Historical Dates
