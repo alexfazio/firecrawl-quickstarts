@@ -17,7 +17,9 @@ from pydantic import BaseModel
 from firecrawl import FirecrawlApp
 from dotenv import load_dotenv
 from supabase_db import Database
-from examples.firecrawl_automated_whitepaper_tracking.discord_notifications import send_paper_notification, should_notify
+from semantic_filter import should_process
+from discord_notifications import send_paper_notification
+from x_post import post_paper
 from logging_config import setup_crawler_logging
 
 # Initialize logger
@@ -167,12 +169,16 @@ async def process_paper_batch(urls: list[str], db: Database, batch_size: int = 5
                 except SQLAlchemyError as e:
                     logger.error(f"Database error storing failed paper {url}: {e}")
                 continue
-            
+
             try:
                 paper_data.update(details)
                 is_new_paper = db.add_paper(paper_data)
                 
-                if should_notify(details, is_new_paper):
+                # Use should_process from semantic_filter
+                should_process_paper, confidence = should_process(details, is_new_paper)
+                
+                if should_process_paper:
+                    # Send Discord notification
                     notification_success = await send_paper_notification(
                         paper_title=details["paper_title"],
                         authors=details["authors"].split(", "),
@@ -190,6 +196,24 @@ async def process_paper_batch(urls: list[str], db: Database, batch_size: int = 5
                             db.update_notification_status(url, True)
                         except SQLAlchemyError as e:
                             logger.error(f"Failed to update notification status for {url}: {e}")
+                    
+                    # Post to X
+                    try:
+                        x_response = post_paper(
+                            paper_title=details["paper_title"],
+                            authors=details["authors"].split(", "),
+                            url=url,
+                            pdf_url=details["view_pdf_url"],
+                            arxiv_url=details["view_arxiv_page_url"],
+                            github_url=details["github_repo_url"]
+                        )
+                        if x_response and 'data' in x_response:
+                            logger.info(f"Successfully posted paper to X: {url}")
+                            # TODO: Update x_post_sent status in DB once column is added
+                        else:
+                            logger.error(f"Failed to post paper to X: {url}")
+                    except Exception as e:
+                        logger.error(f"Error posting to X for {url}: {e}")
                     
             except Exception as e:
                 logger.error(f"Error processing details for {url}: {e}")

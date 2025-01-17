@@ -368,3 +368,30 @@ The system uses X's OAuth 2.0 for posting updates. This requires a one-time loca
    - Works in automated environments
 
 Note: Keep your `.env` file secure and never commit it to version control.
+
+## Local Testing with Historical Dates
+
+The system supports testing with historical paper data using the `--date` argument:
+
+```bash
+# Format: YYYY-MM-DD
+python hf_white_paper_tracker.py --date 2024-03-15
+```
+
+This is particularly useful for:
+- Testing the system with known paper data
+- Backfilling missing papers from specific dates
+- Debugging extraction issues with historical content
+- Verifying database updates without waiting for new papers
+
+You can also provide a full URL using the `--url` argument:
+```bash
+python hf_white_paper_tracker.py --url "https://huggingface.co/papers?date=2024-03-15"
+```
+
+The system prioritizes arguments in this order:
+1. `--url` (if provided)
+2. `--date` (if provided)
+3. Today's date (default)
+
+This flexibility makes local development and testing much more efficient, as you don't need to wait for new papers to be published to verify your changes.

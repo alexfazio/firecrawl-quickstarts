@@ -291,3 +291,4 @@ if __name__ == "__main__":
 
 # TODO: stream the DB contents to a Notion database a la Chief AI Officer database
 # TODO: make db entries nullable. this will require db migrations.
+# TODO: add a column storing wether a post on x has been made for a paper

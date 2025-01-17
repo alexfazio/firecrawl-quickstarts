@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 import openai
 from logging_config import setup_semantic_filter_logging, log_function_call
+from category_prompt import DESIRED_CATEGORY
 
 # Load environment variables
 load_dotenv()
@@ -30,6 +31,33 @@ class CategoryMatch(BaseModel):
     """
     belongs_to_category: bool
     confidence: float
+
+@log_function_call
+def should_process(paper_details: dict, is_new_paper: bool) -> tuple[bool, float]:
+    """
+    Determine if a paper should be processed (notifications, posts, etc.)
+    
+    Args:
+        paper_details (dict): Dictionary containing paper details
+        is_new_paper (bool): Whether this is a new paper or an update
+        
+    Returns:
+        tuple[bool, float]: (should_process, confidence)
+            - should_process: True if paper should be processed
+            - confidence: Model's confidence score
+    """
+    if not is_new_paper:
+        return False, 0.0
+
+    # Get semantic classification
+    belongs, confidence = belongs_to_category(
+        paper_details["paper_title"],
+        paper_details["abstract_body"],
+        DESIRED_CATEGORY
+    )
+    
+    # Only process if both belongs is True AND confidence is high enough
+    return belongs and confidence > 0.8, confidence
 
 @log_function_call
 def belongs_to_category(paper_title: str, paper_abstract: str, desired_category: str) -> tuple[bool, float]:
@@ -85,8 +113,7 @@ def belongs_to_category(paper_title: str, paper_abstract: str, desired_category:
             classification.belongs_to_category,
             classification.confidence
         )
-        belongs = classification.belongs_to_category and classification.confidence > 0.8
-        return belongs, classification.confidence
+        return classification.belongs_to_category, classification.confidence
 
     except (JSONDecodeError, ValidationError) as e:
         logger.error("Error parsing or validating classification result: %s", e)

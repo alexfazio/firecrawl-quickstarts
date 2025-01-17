@@ -5,23 +5,19 @@ import base64
 import hashlib
 import secrets
 import webbrowser
-import logging
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
 from dotenv import load_dotenv, set_key, find_dotenv
 import requests
 from typing import Optional
+from logging_config import setup_base_logging, log_function_call
 
-# Configure logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('x_oauth_debug.log'),
-        logging.StreamHandler()
-    ]
+# Configure logging using the centralized configuration
+logger = setup_base_logging(
+    logger_name="x_poster",
+    log_file="x_poster.log",
+    format_string='%(asctime)s - %(levelname)s - %(funcName)s - %(message)s'
 )
-logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -30,6 +26,7 @@ TOKEN_URL = "https://api.twitter.com/2/oauth2/token"
 CALLBACK_URL = "http://127.0.0.1:8000/callback"
 X_API_URL = "https://api.twitter.com/2/tweets"
 
+@log_function_call
 def generate_pkce_pair():
     """Generate PKCE code verifier and challenge"""
     code_verifier = secrets.token_urlsafe(64)
@@ -37,7 +34,7 @@ def generate_pkce_pair():
         hashlib.sha256(code_verifier.encode()).digest()
     ).rstrip(b'=').decode()
     
-    logger.debug(f"Generated PKCE - Verifier length: {len(code_verifier)}, Challenge length: {len(code_challenge)}")
+    logger.debug(f"Generated PKCE - Verifier: {len(code_verifier)} chars, Challenge: {len(code_challenge)} chars")
     return code_verifier, code_challenge
 
 class CallbackHandler(BaseHTTPRequestHandler):
@@ -46,7 +43,7 @@ class CallbackHandler(BaseHTTPRequestHandler):
     
     def log_message(self, format, *args):
         """Override to use our logger"""
-        logger.info(f"CallbackHandler: {format%args}")
+        logger.info(f"OAuth Callback: {format%args}")
     
     def do_GET(self):
         """Process callback GET request"""
@@ -71,36 +68,41 @@ class CallbackHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(b"Authorization successful! You can close this window.")
         
+@log_function_call
 def load_stored_tokens():
     """Load stored OAuth tokens from .env"""
     dotenv_path = find_dotenv()
     load_dotenv(dotenv_path)
     
-    # Check if we have both required tokens
     access_token = os.getenv('X_ACCESS_TOKEN')
     refresh_token = os.getenv('X_REFRESH_TOKEN')
     
     if access_token and refresh_token:
+        logger.debug("Successfully loaded stored tokens")
         return {
             'access_token': access_token,
             'refresh_token': refresh_token,
             'expires_in': os.getenv('X_TOKEN_EXPIRES_IN'),
             'scope': os.getenv('X_TOKEN_SCOPE')
         }
+    logger.warning("No stored tokens found")
     return None
 
+@log_function_call
 def save_tokens(tokens):
     """Save OAuth tokens to .env"""
     dotenv_path = find_dotenv()
     
-    # Update each token in .env
-    set_key(dotenv_path, 'X_ACCESS_TOKEN', tokens['access_token'])
-    set_key(dotenv_path, 'X_REFRESH_TOKEN', tokens['refresh_token'])
-    set_key(dotenv_path, 'X_TOKEN_EXPIRES_IN', str(tokens['expires_in']))
-    set_key(dotenv_path, 'X_TOKEN_SCOPE', tokens['scope'])
-    
-    # Reload environment
-    load_dotenv(dotenv_path)
+    try:
+        set_key(dotenv_path, 'X_ACCESS_TOKEN', tokens['access_token'])
+        set_key(dotenv_path, 'X_REFRESH_TOKEN', tokens['refresh_token'])
+        set_key(dotenv_path, 'X_TOKEN_EXPIRES_IN', str(tokens['expires_in']))
+        set_key(dotenv_path, 'X_TOKEN_SCOPE', tokens['scope'])
+        load_dotenv(dotenv_path)
+        logger.info("Successfully saved tokens to .env")
+    except Exception as e:
+        logger.error(f"Failed to save tokens: {str(e)}")
+        raise
 
 def refresh_access_token(refresh_token):
     """Get new access token using refresh token"""
