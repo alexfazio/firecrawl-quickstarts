@@ -22,6 +22,7 @@ openai = ">=0.28.0"
 pytz = "2024.1"
 requests-oauthlib = "^2.0.0"
 requests = "^2.32.3"
+playwright = "^1.49.1"
 
 [build-system]
 requires = ["poetry-core"]
