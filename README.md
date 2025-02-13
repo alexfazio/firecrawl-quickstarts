@@ -13,6 +13,28 @@ To use these quickstarts, you'll need a Firecrawl API key. If you don't have one
 
 ## Available Quickstarts
 
+### Eventbrite AI Event Scout
+
+Automated discovery of AI/ML events across major cities
+
+- Scrapes events from 50+ global cities daily
+- Confidence scoring for relevance filtering
+- NLP filtering for relevant content
+- Automated Discord alerts with event details
+
+[Go to Eventbrite AI Event Scout](./events-scout-examples/eventbrite.ipynb)
+
+### Luma AI Event Discovery 
+
+Automated tracking of tech meetups across 60+ global cities
+
+- Scrapes and structures event data (titles/dates/locations)
+- Confidence scoring for relevance filtering
+- NLP filtering for relevant events
+- Automated Discord alerts with event details
+
+[Go to Luma AI Event Discovery](./events-scout-examples/luma.ipynb)
+
 ### Firecrawl Web Crawling with OpenAI and Anthropic
 
 This quickstart introduces how to integrate Firecrawl with OpenAI's Anthropic models to search and extract information based on specific user objectives. Learn to map a website, identify relevant pages, and retrieve content aligned with the objective. Ideal for targeted information gathering.
